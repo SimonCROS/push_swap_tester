@@ -9,7 +9,7 @@ L'exécutable push_swap est cherché par défaut dans le répertoire courant et 
 Les options suivantes sont disponibles :
 
 **-h**, **--help**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Afficher l'aide
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche l'aide
 
 **-s**, **--sorted**\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Envoie uniquement des nombres triés au program.
