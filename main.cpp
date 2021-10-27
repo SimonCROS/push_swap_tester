@@ -50,7 +50,7 @@ static const string getHelp()
 	help += "     Les options suivantes sont disponibles :\n";
 	help += "     \n";
 	help += "     \033[1m-h\033[0m, \033[1m--help\033[0m\n";
-	help += "             Montre cette page.\n";
+	help += "             Afficher l'aide.\n";
 	help += "     \n";
 	help += "     \033[1m-s\033[0m, \033[1m--sorted\033[0m\n";
 	help += "             Envoie uniquement des nombres triés au program.\n";
