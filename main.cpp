@@ -29,13 +29,34 @@ struct program_params
 	optional<string>	checker;
 };
 
+static const string getUsage()
+{
+	return "usage: ./complexity [-hs] [-p file] numbers iterations [goal] [checker]";
+}
+
 static const string getHelp()
 {
 	string help;
 
-	help += "\033[91mUsage :\n";
-	help += "\033[90m./complexity [-h|--help]\033[0m\n";
-	help += "\033[90m./complexity [-s|--sorted] <nb_item> <nb_iter> [goal] [checker]\033[0m";
+	help += "\033[1mNAME\033[0m\n";
+	help += "     \033[1m./complexity\033[0m -- lance un benchmark de votre push_swap\n";
+	help += "\n";
+	help += "\033[1mSYNOPSIS\033[0m\n";
+	help += "     \033[1m./complexity\033[0m [\033[1m-hs\033[0m] [\033[1m-p\033[0m \033[4mfile\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
+	help += "\n";
+	help += "\033[1mDESCRIPTION\033[0m\n";
+	help += "     L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.\n";
+	help += "     \n";
+	help += "     Les options suivantes sont disponibles :\n";
+	help += "     \n";
+	help += "     \033[1m-h\033[0m, \033[1m--help\033[0m\n";
+	help += "             Montre cette page.\n";
+	help += "     \n";
+	help += "     \033[1m-s\033[0m, \033[1m--sorted\033[0m\n";
+	help += "             Envoie uniquement des nombres triés au program.\n";
+	help += "     \n";
+	help += "     \033[1m-p\033[0m \033[4mfile\033[0m, \033[1m--program\033[0m=\033[4mfile\033[0m\n";
+	help += "             Utilise \033[4mfile\033[0m en tant qu'exécutable push_swap.\n";
 	return help;
 }
 
@@ -59,14 +80,14 @@ static int parseNumber(string str, int min)
 	{
 		number = stoi(str.c_str(), &end);
 		if (str.length() > end != 0)
-			throw invalid_argument(str + " is not a valid number");
+			throw invalid_argument("");
 	}
 	catch(const exception& e)
 	{
 		throw invalid_argument(str + " is not a valid number");
 	}
 	if (number < min)
-		throw invalid_argument(str + " must be greater than " + to_string(min));
+		throw invalid_argument(str + " must be at least equal to " + to_string(min));
 	return number;
 }
 
@@ -96,6 +117,9 @@ static struct program_opts getOptions(int& argc, char **&argv)
 			case 's':
 				opts.sorted = true;
 				break;
+			default:
+				cerr << getUsage() << endl;
+				exit(EXIT_FAILURE);
 		}
 	}
 	argc -= optind;
@@ -109,7 +133,7 @@ static struct program_params getParameters(int argc, char **argv)
 	program_params params;
 
 	if (argc < 2 || argc > 4)
-		throw invalid_argument(getHelp());
+		throw invalid_argument("");
 	params.numbers = parseNumber(argv[0], 0);
 	params.iterations = parseNumber(argv[1], 1);
 	if (argc >= 3)
@@ -230,7 +254,9 @@ int main(int argc, char **argv)
 	}
 	catch (const std::invalid_argument& e)
 	{
-		cerr << e.what() << endl;
+		if (*e.what())
+			cerr << e.what() << endl;
+		cerr << getUsage() << endl;
 		return EXIT_FAILURE;
 	}
 
