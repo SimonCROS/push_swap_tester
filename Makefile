@@ -6,29 +6,34 @@ NAME				= complexity
 
 override CPPC		:= clang++
 override CPPFLAGS	:= -std=c++17 -Wall -Wextra
-override RM			:= rm -rf
+override RM			:= rm
 
 # Sources
 
 override SRCS		:=							\
 				main.cpp						\
+				exec.cpp						\
+				args.cpp						\
+				print.cpp						\
+				utils.cpp						\
 
 override HEADERS	:=							\
+				complexity.hpp
 
-override OBJS		:= $(SRCS:.cpp=.o)
+override OBJS		:= $(addprefix obj/, $(SRCS:.cpp=.o))
 
 # Rules
 
 all:		$(NAME)
 
-%.o:		%.cpp $(HEADERS)
-			$(CPPC) $(CPPFLAGS) -c $< -o $@
+obj/%.o:	src/%.cpp $(addprefix includes/,$(HEADERS))
+			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes
 
 $(NAME):	$(OBJS)
 			$(CPPC) $(CPPFLAGS) -o $@ $(OBJS)
 
 clean:
-			$(RM) $(OBJS)
+			$(RM) -r obj
 
 fclean:		clean
 			$(RM) $(NAME)
