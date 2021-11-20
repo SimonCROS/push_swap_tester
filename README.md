@@ -2,20 +2,23 @@
 
 ## Usage
 
-**./complexity** [**-hs**] [**-p** <ins>file</ins>] <ins>numbers</ins> <ins>iterations</ins> [<ins>goal</ins>] [<ins>checker</ins>]
+**./complexity** [**-vhs**] [**-l** <ins>push_swap</ins>] <ins>numbers</ins> <ins>iterations</ins> [<ins>goal</ins>] [<ins>checker</ins>]
 
 L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.
 
 Les options suivantes sont disponibles :
 
+**-v**, **--version**\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche la version du testeur
+
 **-h**, **--help**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche l'aide
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche l'aide.
 
 **-s**, **--sorted**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Envoie uniquement des nombres triés au program.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Envoie uniquement des nombres triés au programme.
 
-**-p** <ins>file</ins>, **--program**=<ins>file</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilise <ins>file</ins> en tant qu'exécutable push_swap.
+**-f** <ins>push_swap</ins>, **--file**=<ins>push_swap</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilise <ins>push_swap</ins> en tant qu'exécutable push_swap.
 
 ### Demo :
 

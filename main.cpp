@@ -15,6 +15,7 @@ using namespace std;
 
 struct program_opts
 {
+	bool				version;
 	bool				help;
 	bool				sorted;
 	optional<string>	program;
@@ -29,9 +30,14 @@ struct program_params
 	optional<string>	checker;
 };
 
+static const string getVersion()
+{
+	return "Complexity v1.1.0";
+}
+
 static const string getUsage()
 {
-	return "usage: ./complexity [-hs] [-p file] numbers iterations [goal] [checker]";
+	return "usage: ./complexity [-vhs] [-f push_swap] numbers iterations [goal] [checker]";
 }
 
 static const string getHelp()
@@ -39,7 +45,7 @@ static const string getHelp()
 	string help;
 
 	help += "\033[1mNAME\033[0m\n";
-	help += "     \033[1m./complexity\033[0m -- lance un benchmark de votre push_swap\n";
+	help += "     \033[1mcomplexity\033[0m -- lance un benchmark de votre push_swap\n";
 	help += "\n";
 	help += "\033[1mSYNOPSIS\033[0m\n";
 	help += "     \033[1m./complexity\033[0m [\033[1m-hs\033[0m] [\033[1m-p\033[0m \033[4mfile\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
@@ -49,14 +55,17 @@ static const string getHelp()
 	help += "     \n";
 	help += "     Les options suivantes sont disponibles :\n";
 	help += "     \n";
+	help += "     \033[1m-v\033[0m, \033[1m--version\033[0m\n";
+	help += "             Affiche la version du testeur.\n";
+	help += "     \n";
 	help += "     \033[1m-h\033[0m, \033[1m--help\033[0m\n";
 	help += "             Affiche l'aide.\n";
 	help += "     \n";
 	help += "     \033[1m-s\033[0m, \033[1m--sorted\033[0m\n";
-	help += "             Envoie uniquement des nombres triés au program.\n";
+	help += "             Envoie uniquement des nombres triés au programme.\n";
 	help += "     \n";
-	help += "     \033[1m-p\033[0m \033[4mfile\033[0m, \033[1m--program\033[0m=\033[4mfile\033[0m\n";
-	help += "             Utilise \033[4mfile\033[0m en tant qu'exécutable push_swap.\n";
+	help += "     \033[1m-f\033[0m \033[4mpush_swap\033[0m, \033[1m--file\033[0m=\033[4mpush_swap\033[0m\n";
+	help += "             Utilise \033[4mpush_swap\033[0m en tant qu'exécutable push_swap.\n";
 	return help;
 }
 
@@ -95,23 +104,27 @@ static struct program_opts getOptions(int& argc, char **&argv)
 {
 	static struct option long_options[] =
 	{
+		{"version", no_argument, NULL, 'v'},
 		{"help", no_argument, NULL, 'h'},
 		{"sorted", no_argument, NULL, 's'},
-		{"program", required_argument, NULL, 'p'},
+		{"file", required_argument, NULL, 'f'},
 		{NULL, 0, NULL, 0}
 	};
 
-	program_opts opts = {false, false, nullopt};
+	program_opts opts = {false, false, false, nullopt};
 
 	int ch;
-	while ((ch = getopt_long(argc, argv, "hsp:", long_options, NULL)) != -1)
+	while ((ch = getopt_long(argc, argv, "vhsf:", long_options, NULL)) != -1)
 	{
 		switch (ch)
 		{
+			case 'v':
+				opts.version = true;
+				break;
 			case 'h':
 				opts.help = true;
 				break;
-			case 'p':
+			case 'f':
 				opts.program = optarg;
 				break;
 			case 's':
@@ -229,9 +242,12 @@ int main(int argc, char **argv)
 	program_params params;
 
 	opts = getOptions(argc, argv);
-	if (opts.help)
+	if (opts.help || opts.version)
 	{
-		cout << getHelp() << endl;
+		if (opts.version)
+			cout << getVersion() << endl;
+		if (opts.help)
+			cout << getHelp() << endl;
 		return (EXIT_SUCCESS);
 	}
 
