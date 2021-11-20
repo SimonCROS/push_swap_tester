@@ -2,7 +2,7 @@
 
 ## Usage
 
-**./complexity** [**-vhs**] [**-l** <ins>push_swap</ins>] <ins>numbers</ins> <ins>iterations</ins> [<ins>goal</ins>] [<ins>checker</ins>]
+**./complexity** [**-vhs**] [**-f** <ins>push_swap</ins>] <ins>numbers</ins> <ins>iterations</ins> [<ins>goal</ins>] [<ins>checker</ins>]
 
 L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.
 

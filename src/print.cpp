@@ -27,7 +27,7 @@ const string getHelp() {
 	help += "     \033[1mcomplexity\033[0m -- lance un benchmark de votre push_swap\n";
 	help += "\n";
 	help += "\033[1mSYNOPSIS\033[0m\n";
-	help += "     \033[1m./complexity\033[0m [\033[1m-hs\033[0m] [\033[1m-p\033[0m \033[4mfile\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
+	help += "     \033[1m./complexity\033[0m [\033[1m-hs\033[0m] [\033[1m-f\033[0m \033[4mfile\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
 	help += "\n";
 	help += "\033[1mDESCRIPTION\033[0m\n";
 	help += "     L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.\n";
