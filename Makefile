@@ -1,12 +1,11 @@
 # Properties
 
-NAME				= complexity
+NAME				:= complexity
 
 # Commands
 
 override CPPC		:= clang++
 override CPPFLAGS	:= -std=c++17 -Wall -Wextra
-override RM			:= rm
 
 # Sources
 
@@ -18,25 +17,34 @@ override SRCS		:=							\
 				utils.cpp						\
 
 override HEADERS	:=							\
-				complexity.hpp
+				complexity.hpp					\
+
+override HEADERS	:= $(addprefix includes/,$(HEADERS))
 
 override OBJS		:= $(addprefix obj/, $(SRCS:.cpp=.o))
+
+override OBJDIRS	:= $(sort $(dir $(OBJS)))
 
 # Rules
 
 all:		$(NAME)
 
-obj/%.o:	src/%.cpp $(addprefix includes/,$(HEADERS))
+obj/%.o:	src/%.cpp $(HEADERS) | 
 			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes
+
+$(OBJS):	| $(OBJDIRS)
+
+$(OBJDIRS):
+			mkdir -p $@
 
 $(NAME):	$(OBJS)
 			$(CPPC) $(CPPFLAGS) -o $@ $(OBJS)
 
 clean:
-			$(RM) -r obj
+			rm -rf obj
 
 fclean:		clean
-			$(RM) $(NAME)
+			rm -f $(NAME)
 
 re:			fclean all
 
