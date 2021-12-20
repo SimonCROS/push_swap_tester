@@ -6,6 +6,8 @@
 #include <numeric>
 #include <optional>
 
+#include <langinfo.h>
+
 using namespace std;
 
 int main(int argc, char **argv) {
@@ -56,7 +58,7 @@ int main(int argc, char **argv) {
 	int ok = 0;
 
 	hideCursor();
-	cout << "\033[97mDémarrage du test : \033[95m" << params.numbers << "\033[97m éléments, \033[95m" << params.iterations << "\033[97m itérations\033[0m" << endl;
+	print_start(params);
 	while (done < params.iterations) {
 		vector<int> nums(params.numbers);
 		vector<string> args;

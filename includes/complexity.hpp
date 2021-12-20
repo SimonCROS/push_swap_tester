@@ -30,6 +30,9 @@ const string &assertExecutable(const string &path);
 struct program_opts getOptions(int &argc, char **&argv);
 struct program_params getParameters(int argc, char **argv);
 string exec(char **argv, optional<string> input = nullopt);
+
+// Print
+void print_start(program_params params);
 void print(program_params params, int done, int total, int best, int worst, int successful, int ok);
 
 #endif

@@ -9,12 +9,15 @@ override CPPFLAGS	:= -std=c++17 -Wall -Wextra
 
 # Sources
 
+LANG				:= fr_FR
+
 override SRCS		:=							\
 				main.cpp						\
 				exec.cpp						\
 				args.cpp						\
 				print.cpp						\
 				utils.cpp						\
+				lang/$(LANG).cpp				\
 
 override HEADERS	:=							\
 				complexity.hpp					\
@@ -28,6 +31,12 @@ override OBJDIRS	:= $(sort $(dir $(OBJS)))
 # Rules
 
 all:		$(NAME)
+
+fr:
+			$(MAKE) LANG="fr_FR" re
+
+en:
+			$(MAKE) LANG="en_GB" re
 
 obj/%.o:	src/%.cpp $(HEADERS) | 
 			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes
