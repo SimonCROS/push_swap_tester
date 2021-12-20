@@ -1,5 +1,11 @@
 # complexity
 
+## Build
+
+Compile with the following command
+
+`make [fr|en]`
+
 ## Usage
 
 **./complexity** [**-vhs**] [**-f** <ins>push_swap</ins>] <ins>numbers</ins> <ins>iterations</ins> [<ins>goal</ins>] [<ins>checker</ins>]
