@@ -29,3 +29,7 @@ Les options suivantes sont disponibles :
 ### Demo :
 
 ![Demo Animation](../assets/demo.gif?raw=true)
+
+---
+
+Thanks [@42cursus-youkim](https://github.com/42cursus-youkim) for the translations.
