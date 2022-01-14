@@ -1,5 +1,7 @@
 #include "complexity.hpp"
 
+#include <stdexcept>
+
 #include <sys/stat.h>
 
 const string &assertExecutable(const string &path) {
