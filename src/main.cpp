@@ -5,8 +5,10 @@
 #include <random>
 #include <numeric>
 #include <optional>
+#include <algorithm>
 
 #include <langinfo.h>
+#include <signal.h>
 
 using namespace std;
 

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <array>
 
+#include <sys/wait.h>
+
 #define NUM_PIPES		  2
 #define PARENT_WRITE_PIPE  0
 #define PARENT_READ_PIPE   1
