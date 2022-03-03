@@ -72,7 +72,10 @@ int launch_test(program_opts& opts, program_params& params) {
 		print(params, done, total, best, worst, successful, ok);
 		cout << "\033[6A";
 	}
-	return (((done - ok) * params.checker.has_value()) + (done - successful));
+	return (
+		+ ((done - ok)         * params.checker.has_value())
+		+ ((done - successful) * params.objective.has_value())
+		);
 }
 
 int main(int argc, char **argv) {
