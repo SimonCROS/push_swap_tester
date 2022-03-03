@@ -12,6 +12,69 @@
 
 using namespace std;
 
+void generate_numbers(std::default_random_engine& rng, program_opts& opts, program_params& params, vector<string>& args, vector<char*>& cargs) {
+	vector<int> nums(params.numbers);
+
+	std::iota(std::begin(nums), std::end(nums), 0);
+	if (!opts.sorted)
+		std::shuffle(nums.begin(), nums.end(), rng);
+
+	args.clear();
+	cargs.clear();
+
+	std::transform(nums.begin(), nums.end(), std::back_inserter(args), [](int d) {
+		return std::to_string(d);
+	});
+
+	cargs.push_back(params.program.data());
+	for (string &a : args)
+		cargs.push_back(a.data());
+	cargs.push_back(nullptr);
+}
+
+int launch_test(program_opts& opts, program_params& params) {
+	std::random_device rd; 
+	std::default_random_engine rng = std::default_random_engine(rd());
+
+	vector<string> args;
+	vector<char*> cargs;
+
+	args.reserve(params.numbers);
+	cargs.reserve(params.numbers + 2);
+
+	int done = 0, worst = 0, best = -1, total = 0, successful = 0, ok = 0;
+
+	hideCursor();
+	print_start(params);
+	while (done < params.iterations) {
+		generate_numbers(rng, opts, params, args, cargs);
+
+		string result = exec(cargs.data());
+		int lines = std::count(result.begin(), result.end(), '\n');
+
+		done++;
+		total += lines;
+
+		if (params.checker.has_value())
+		{
+			cargs[0] = params.checker.value().data();
+
+			if (exec(cargs.data(), result) == "OK\n")
+				ok++;
+		}
+		if (lines <= params.objective.value_or(-1))
+			successful++;
+		if (lines < best || best == -1)
+			best = lines;
+		if (lines > worst)
+			worst = lines;
+
+		print(params, done, total, best, worst, successful, ok);
+		cout << "\033[6A";
+	}
+	return (((done - ok) * params.checker.has_value()) + (done - successful));
+}
+
 int main(int argc, char **argv) {
 	program_opts opts;
 	program_params params;
@@ -22,7 +85,7 @@ int main(int argc, char **argv) {
 			cout << getVersion() << endl;
 		if (opts.help)
 			cout << getHelp() << endl;
-		return (EXIT_SUCCESS);
+		return EXIT_SUCCESS;
 	}
 
 	try {
@@ -42,6 +105,8 @@ int main(int argc, char **argv) {
 		cerr << getUsage() << endl;
 		return EXIT_FAILURE;
 	}
+	if (opts.sorted)
+		params.iterations = 1;
 
 	atexit([]() {
 		showCursor();
@@ -49,58 +114,5 @@ int main(int argc, char **argv) {
 	});
 	signal(SIGINT, [](int) {exit(EXIT_SUCCESS);});
 	
-	auto rd = std::random_device {}; 
-	auto rng = std::default_random_engine { rd() };
-
-	int done = 0;
-	int worst = 0;
-	int best = -1;
-	int	total = 0;
-	int successful = 0;
-	int ok = 0;
-
-	hideCursor();
-	print_start(params);
-	while (done < params.iterations) {
-		vector<int> nums(params.numbers);
-		vector<string> args;
-
-		iota(begin(nums), end(nums), 0);
-		if (!opts.sorted)
-			std::shuffle(nums.begin(), nums.end(), rng);
-		std::transform(nums.begin(), nums.end(), std::back_inserter(args), [](int d) {
-				return std::to_string(d);
-			}
-		);
-
-		vector<char*> cargs;
-		cargs.push_back(const_cast<char*>(params.program.c_str()));
-		for (const string &a : args)
-			cargs.push_back(const_cast<char*>(a.c_str()));
-		cargs.push_back(nullptr);
-
-		string result = exec(cargs.data());
-		int lines = std::count(result.begin(), result.end(), '\n');
-
-		done++;
-		total += lines;
-
-		if (params.checker.has_value())
-		{
-			cargs[0] = const_cast<char*>(params.checker.value().c_str());
-
-			if (exec(cargs.data(), result) == "OK\n")
-				ok++;
-		}
-		if (lines <= params.objective.value_or(-1))
-			successful++;
-		if (lines < best || best == -1)
-			best = lines;
-		if (lines > worst)
-			worst = lines;
-
-		print(params, done, total, best, worst, successful, ok);
-		cout << "\033[6A";
-	}
-	return EXIT_SUCCESS;
+	return launch_test(opts, params);
 }
