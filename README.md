@@ -20,7 +20,7 @@ Les options suivantes sont disponibles :
 **-h**, **--help**\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche l'aide.
 
-**-s** <ins>seed</ins>, **--seed** <ins>seed</ins>\
+**-s** <ins>seed</ins>, **--seed**=<ins>seed</ins>\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Génère les nombres en fonction de la graine.
 
 **-f** <ins>push_swap</ins>, **--file**=<ins>push_swap</ins>\
