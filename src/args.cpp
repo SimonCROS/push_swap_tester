@@ -5,12 +5,12 @@
 
 using namespace std;
 
-static int parseNumber(string str, int min) {
+static long parseNumber(string str, int min) {
 	size_t end;
-	int number;
+	long number;
 
 	try {
-		number = stoi(str.c_str(), &end);
+		number = stol(str.c_str(), &end);
 		if (str.length() > end != 0)
 			throw invalid_argument("");
 	}
@@ -26,15 +26,16 @@ struct program_opts getOptions(int &argc, char **&argv) {
 	static struct option long_options[] = {
 		{"version", no_argument, NULL, 'v'},
 		{"help", no_argument, NULL, 'h'},
-		{"sorted", no_argument, NULL, 's'},
+		{"sorted", no_argument, NULL, 42},
 		{"file", required_argument, NULL, 'f'},
+		{"seed", required_argument, NULL, 's'},
 		{NULL, 0, NULL, 0}
 	};
 
-	program_opts opts = {false, false, false, nullopt};
+	program_opts opts = {false, false, false, nullopt, nullopt};
 
 	int ch;
-	while ((ch = getopt_long(argc, argv, "vhsf:", long_options, NULL)) != -1) {
+	while ((ch = getopt_long(argc, argv, "vhs:f:", long_options, NULL)) != -1) {
 		switch (ch) {
 			case 'v':
 				opts.version = true;
@@ -45,8 +46,11 @@ struct program_opts getOptions(int &argc, char **&argv) {
 			case 'f':
 				opts.program = optarg;
 				break;
-			case 's':
+			case 42:
 				opts.sorted = true;
+				break;
+			case 's':
+				opts.seed = parseNumber(optarg, 0);
 				break;
 			default:
 				cerr << getUsage() << endl;

@@ -3,14 +3,16 @@
 
 #include <string>
 #include <optional>
+#include <random>
 
 using namespace std;
 
 struct program_opts {
-	bool				version;
-	bool				help;
-	bool				sorted;
-	optional<string>	program;
+	bool					version;
+	bool					help;
+	bool					sorted;
+	optional<std::string>	program;
+	optional<std::default_random_engine::result_type> seed;
 };
 
 struct program_params {
@@ -32,7 +34,8 @@ struct program_params getParameters(int argc, char **argv);
 string exec(char **argv, optional<string> input = nullopt);
 
 // Print
-void print_start(program_params params);
-void print(program_params params, int done, int total, int best, int worst, int successful, int ok);
+void printStart(const program_opts& opts, const program_params& params);
+void print(const program_params& params, int done, int total, int best, int worst, int successful, int ok);
+void printEnd(const program_opts& opts, const program_params& params);
 
 #endif

@@ -32,11 +32,14 @@ const string getHelp() {
 	return help;
 }
 
-void print_start(program_params params) {
-	cout << "\033[97mDémarrage du test : \033[95m" << params.numbers << "\033[97m éléments, \033[95m" << params.iterations << "\033[97m itérations\033[0m" << endl;
+void printStart(const program_opts& opts, const program_params& params) {
+	cout << "\033[97mDémarrage du test : \033[95m" << params.numbers << "\033[97m éléments, \033[95m" << params.iterations << "\033[97m itérations\033[0m";
+	if (opts.seed.has_value())
+		cout << " (seed " << opts.seed.value() << ")";
+	cout << endl;
 }
 
-void print(program_params params, int done, int total, int best, int worst, int successful, int ok) {
+void print(const program_params& params, int done, int total, int best, int worst, int successful, int ok) {
 	cout << "Pire = \033[31m" << (worst) << "\033[0m instructions" << endl;
 	cout << "Moyenne = \033[33m" << (total / done) << "\033[0m instructions" << endl;
 	cout << "Meilleur = \033[36m" << (best) << "\033[0m instructions" << endl;
@@ -49,4 +52,7 @@ void print(program_params params, int done, int total, int best, int worst, int 
 	else
 		cout << "Précision = entrez un testeur en quatrième argument" << endl;
 	cout << "\033[32m" << (done * 100 / params.iterations) << "\033[0m % effectué" << endl;
+}
+
+void printEnd(const program_opts&, const program_params&) {
 }

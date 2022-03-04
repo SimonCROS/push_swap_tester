@@ -2,15 +2,17 @@
 
 #include <iostream>
 #include <vector>
-#include <random>
 #include <numeric>
 #include <optional>
 #include <algorithm>
+#include <climits>
 
 #include <langinfo.h>
 #include <signal.h>
 
 using namespace std;
+
+bool fails = false;
 
 void generate_numbers(std::default_random_engine& rng, program_opts& opts, program_params& params, vector<string>& args, vector<char*>& cargs) {
 	vector<int> nums(params.numbers);
@@ -32,9 +34,8 @@ void generate_numbers(std::default_random_engine& rng, program_opts& opts, progr
 	cargs.push_back(nullptr);
 }
 
-int launch_test(program_opts& opts, program_params& params) {
-	std::random_device rd; 
-	std::default_random_engine rng = std::default_random_engine(rd());
+void launchTest(program_opts& opts, program_params& params) {
+	std::default_random_engine rng = std::default_random_engine(opts.seed.value());
 
 	vector<string> args;
 	vector<char*> cargs;
@@ -45,7 +46,6 @@ int launch_test(program_opts& opts, program_params& params) {
 	int done = 0, worst = 0, best = -1, total = 0, successful = 0, ok = 0;
 
 	hideCursor();
-	print_start(params);
 	while (done < params.iterations) {
 		generate_numbers(rng, opts, params, args, cargs);
 
@@ -55,15 +55,16 @@ int launch_test(program_opts& opts, program_params& params) {
 		done++;
 		total += lines;
 
-		if (params.checker.has_value())
-		{
+		if (params.checker.has_value()) {
 			cargs[0] = params.checker.value().data();
 
 			if (exec(cargs.data(), result) == "OK\n")
 				ok++;
 		}
+
 		if (lines <= params.objective.value_or(-1))
 			successful++;
+
 		if (lines < best || best == -1)
 			best = lines;
 		if (lines > worst)
@@ -72,10 +73,20 @@ int launch_test(program_opts& opts, program_params& params) {
 		print(params, done, total, best, worst, successful, ok);
 		cout << "\033[6A";
 	}
-	return (
-		+ ((done - ok)         * params.checker.has_value())
-		+ ((done - successful) * params.objective.has_value())
-		);
+
+	if (params.checker.has_value() && (done - ok > 0))
+		fails = true;
+	else if (params.objective.has_value() && (done - successful > 0))
+		fails = true;
+}
+
+void start(program_opts& opts, program_params& params) {
+	std::random_device rd;
+	opts.seed = opts.seed.value_or(rd());
+
+	printStart(opts, params);
+	launchTest(opts, params);
+	printEnd(opts, params);
 }
 
 int main(int argc, char **argv) {
@@ -111,11 +122,14 @@ int main(int argc, char **argv) {
 	if (opts.sorted)
 		params.iterations = 1;
 
-	atexit([]() {
-		showCursor();
+	std::atexit([]() {
 		cout << "\033[6B\033[0m";
+		showCursor();
 	});
-	signal(SIGINT, [](int) {exit(EXIT_SUCCESS);});
+	signal(SIGINT, [](int) {
+		exit(fails);
+	});
+	start(opts, params);
 	
-	return launch_test(opts, params);
+	return fails;
 }
