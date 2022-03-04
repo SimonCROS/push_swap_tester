@@ -11,7 +11,7 @@ const string getHelp() {
 	help += "     \033[1mcomplexity\033[0m -- lance un benchmark de votre push_swap\n";
 	help += "\n";
 	help += "\033[1mSYNOPSIS\033[0m\n";
-	help += "     \033[1m./complexity\033[0m [\033[1m-hs\033[0m] [\033[1m-f\033[0m \033[4mfile\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
+	help += "     \033[1m./complexity\033[0m [\033[1m-vh\033[0m] [\033[1m-s\033[0m \033[4mseed\033[0m] [\033[1m-f\033[0m \033[4mfile\033[0m] [\033[1m--seed\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
 	help += "\n";
 	help += "\033[1mDESCRIPTION\033[0m\n";
 	help += "     L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.\n";
@@ -24,11 +24,14 @@ const string getHelp() {
 	help += "     \033[1m-h\033[0m, \033[1m--help\033[0m\n";
 	help += "             Affiche l'aide.\n";
 	help += "     \n";
-	help += "     \033[1m-s\033[0m, \033[1m--sorted\033[0m\n";
-	help += "             Envoie uniquement des nombres triés au programme.\n";
+	help += "     \033[1m-s\033[0m \033[4mseed\033[0m, \033[1m--seed\033[0m=\033[4mseed\033[0m\n";
+	help += "             Génère les nombres en fonction de la graine.\n";
 	help += "     \n";
 	help += "     \033[1m-f\033[0m \033[4mpush_swap\033[0m, \033[1m--file\033[0m=\033[4mpush_swap\033[0m\n";
 	help += "             Utilise \033[4mpush_swap\033[0m en tant qu'exécutable push_swap.\n";
+	help += "     \n";
+	help += "     \033[1m--sorted\033[0m\n";
+	help += "             Envoie uniquement des nombres triés au programme.\n";
 	return help;
 }
 

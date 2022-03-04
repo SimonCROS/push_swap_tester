@@ -17,5 +17,5 @@ const string getVersion() {
 }
 
 const string getUsage() {
-	return "usage: ./complexity [-vhs] [-f push_swap] numbers iterations [goal] [checker]";
+	return "usage: ./complexity [-vh] [-s seed] [-f push_swap] [--sorted] numbers iterations [goal] [checker]";
 }

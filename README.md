@@ -8,7 +8,7 @@ Compile with the following command
 
 ## Usage
 
-**./complexity** [**-vhs**] [**-f** <ins>push_swap</ins>] <ins>numbers</ins> <ins>iterations</ins> [<ins>goal</ins>] [<ins>checker</ins>]
+**./complexity** \[**-vh**\] \[**-s** <ins>seed</ins>\] \[**-f** <ins>push_swap</ins>\] \[**--sorted**\] <ins>numbers</ins> <ins>iterations</ins> \[<ins>goal</ins>\] \[<ins>checker</ins>\]
 
 L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.
 
@@ -20,11 +20,14 @@ Les options suivantes sont disponibles :
 **-h**, **--help**\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche l'aide.
 
-**-s**, **--sorted**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Envoie uniquement des nombres triés au programme.
+**-s** <ins>seed</ins>, **--seed** <ins>seed</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Génère les nombres en fonction de la graine.
 
 **-f** <ins>push_swap</ins>, **--file**=<ins>push_swap</ins>\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilise <ins>push_swap</ins> en tant qu'exécutable push_swap.
+
+**--sorted**\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Envoie uniquement des nombres triés au programme.
 
 ### Demo :
 
