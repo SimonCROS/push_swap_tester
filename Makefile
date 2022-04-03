@@ -38,7 +38,7 @@ fr:
 en:
 			$(MAKE) LANG="en_GB" re
 
-obj/%.o:	src/%.cpp $(HEADERS) | 
+obj/%.o:	src/%.cpp $(HEADERS)
 			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes
 
 $(OBJS):	| $(OBJDIRS)
