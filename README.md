@@ -35,5 +35,5 @@ Les options suivantes sont disponibles :
 
 ---
 
-Merci a [@mhouppin](https://github.com/mhouppin) pour l'inspiration visuelle du testeur.\
+Merci à [@mhouppin](https://github.com/mhouppin) pour l'inspiration visuelle du testeur.\
 Thanks [@42cursus-youkim](https://github.com/42cursus-youkim) for the translations.
