@@ -1,5 +1,6 @@
 #include "complexity.hpp"
 
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include <numeric>
@@ -39,11 +40,13 @@ void launchTest(program_opts& opts, program_params& params) {
 
 	vector<string> args;
 	vector<char*> cargs;
+	vector<int> results_list;
 
 	args.reserve(params.numbers);
 	cargs.reserve(params.numbers + 2);
 
 	int done = 0, worst = 0, best = -1, total = 0, successful = 0, ok = 0;
+	double mean, stddev;
 
 	hideCursor();
 	while (done < params.iterations) {
@@ -53,6 +56,7 @@ void launchTest(program_opts& opts, program_params& params) {
 		int lines = std::count(result.begin(), result.end(), '\n');
 
 		done++;
+		results_list.push_back(lines);
 		total += lines;
 
 		if (params.checker.has_value()) {
@@ -70,8 +74,15 @@ void launchTest(program_opts& opts, program_params& params) {
 		if (lines > worst)
 			worst = lines;
 
-		print(params, done, total, best, worst, successful, ok);
-		cout << "\033[6A";
+		mean = double(total) / done;
+		stddev = 0.0;
+		for (int result : results_list)
+			stddev += pow(mean - result, 2.0);
+
+		stddev = sqrt(stddev / done);
+
+		print(params, done, round(mean), stddev, best, worst, successful, ok);
+		cout << "\033[7A";
 	}
 
 	if (params.checker.has_value() && (done - ok > 0))
@@ -123,7 +134,7 @@ int main(int argc, char **argv) {
 		params.iterations = 1;
 
 	std::atexit([]() {
-		cout << "\033[6B\033[0m";
+		cout << "\033[7B\033[0m";
 		showCursor();
 	});
 	signal(SIGINT, [](int) {

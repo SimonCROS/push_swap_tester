@@ -35,7 +35,7 @@ string exec(char **argv, optional<string> input = nullopt);
 
 // Print
 void printStart(const program_opts& opts, const program_params& params);
-void print(const program_params& params, int done, int total, int best, int worst, int successful, int ok);
+void print(const program_params& params, int done, int mean, double stddev, int best, int worst, int successful, int ok);
 void printEnd(const program_opts& opts, const program_params& params);
 
 #endif
