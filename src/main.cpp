@@ -44,6 +44,7 @@ void launchTest(program_opts& opts, program_params& params) {
 
 	args.reserve(params.numbers);
 	cargs.reserve(params.numbers + 2);
+	results_list.reserve(params.iterations);
 
 	int done = 0, worst = 0, best = -1, total = 0, successful = 0, ok = 0;
 	double mean, stddev;
