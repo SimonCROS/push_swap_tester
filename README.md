@@ -31,7 +31,8 @@ Les options suivantes sont disponibles :
 
 ### Demo :
 
-![Demo Animation](../assets/demo.gif?raw=true)
+![Demo Animation for 100 elements](../assets/v1.6.0-100-100-checker.gif)
+![Demo Animation for 500 elements](../assets/v1.6.0-500-100.gif)
 
 ---
 
