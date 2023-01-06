@@ -1,5 +1,6 @@
 #include "complexity.hpp"
 
+#include <iomanip>
 #include <iostream>
 
 using namespace std;
@@ -42,10 +43,11 @@ void printStart(const program_opts& opts, const program_params& params) {
 	cout << endl;
 }
 
-void print(const program_params& params, int done, int total, int best, int worst, int successful, int ok) {
+void print(const program_params& params, int done, int mean, double stddev, int best, int worst, int successful, int ok) {
 	cout << "Worst = \033[31m" << (worst) << "\033[0m instructions" << endl;
-	cout << "Median = \033[33m" << (total / done) << "\033[0m instructions" << endl;
+	cout << "Median = \033[33m" << (mean) << "\033[0m instructions" << endl;
 	cout << "Best = \033[36m" << (best) << "\033[0m instructions" << endl;
+	cout << "Std. deviation = \033[93m" << setiosflags(ios_base::fixed) << setprecision(1) << (stddev) << "\033[0m instructions" << endl;
 	if (params.objective.has_value())
 		cout << "Objective = \033[94m" << (successful * 100 / done) << "\033[0m % under \033[94m" << (params.objective.value()) << "\033[0m (\033[91m" << (done - successful) << "\033[0m above)   " << endl;
 	else
