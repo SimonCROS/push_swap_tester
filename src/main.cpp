@@ -113,6 +113,10 @@ int main(int argc, char **argv) {
 			cout << getHelp() << endl;
 		return EXIT_SUCCESS;
 	}
+	if (opts.output_level.has_value() && !opts.output.has_value()) {
+		cout << "Cannot set the output level if no output file is provided." << endl;
+		return EXIT_FAILURE;
+	}
 
 	try {
 		params = getParameters(argc, argv);

@@ -7,11 +7,20 @@
 
 using namespace std;
 
+enum output_levels {
+	SUMMARY,
+	FAILED,
+	ABOVE,
+	ALL
+};
+
 struct program_opts {
 	bool					version;
 	bool					help;
 	bool					sorted;
 	optional<std::string>	program;
+	optional<std::string>	output;
+	optional<std::string>	output_level;
 	optional<std::default_random_engine::result_type> seed;
 };
 
