@@ -92,10 +92,14 @@ void launchTest()
 			{
 				ok++;
 			}
-			else if (opts.output.has_value() && !input_saved)
+			else
 			{
-				input_saved = true;
-				error_inputs.push_back(boost::algorithm::join(args, " "));
+				fails = true;
+				if (opts.output.has_value() && !input_saved)
+				{
+					input_saved = true;
+					error_inputs.push_back(boost::algorithm::join(args, " "));
+				}
 			}
 		}
 
@@ -105,10 +109,14 @@ void launchTest()
 			{
 				successful++;
 			}
-			else if (opts.output.has_value() && !input_saved)
+			else
 			{
-				input_saved = true;
-				failed_inputs.push_back(boost::algorithm::join(args, " "));
+				fails = true;
+				if (opts.output.has_value() && !input_saved)
+				{
+					input_saved = true;
+					failed_inputs.push_back(boost::algorithm::join(args, " "));
+				}
 			}
 		}
 
@@ -127,11 +135,6 @@ void launchTest()
 		print_status(params, done, round(mean), stddev, best, worst, successful, ok);
 		cout << "\033[7A";
 	}
-
-	if (params.checker.has_value() && (done - ok > 0))
-		fails = true;
-	else if (params.objective.has_value() && (done - successful > 0))
-		fails = true;
 }
 
 void start()
@@ -214,6 +217,9 @@ int main(int argc, char **argv)
 		cout << "\033[7B\033[0m";
 		showCursor();
 		printEnd(opts, params); });
+	signal(SIGINT, [](int)
+		   { exit(fails); });
+
 	start();
 
 	return fails;
