@@ -28,16 +28,15 @@ struct program_opts getOptions(int &argc, char **&argv) {
 		{"help", no_argument, NULL, 'h'},
 		{"sorted", no_argument, NULL, 42},
 		{"output", required_argument, NULL, 'o'},
-		{"output-level", required_argument, NULL, 'l'},
 		{"file", required_argument, NULL, 'f'},
 		{"seed", required_argument, NULL, 's'},
 		{NULL, 0, NULL, 0}
 	};
 
-	program_opts opts = {false, false, false, nullopt, nullopt, nullopt, nullopt};
+	program_opts opts = {false, false, false, nullopt, nullopt, nullopt};
 
 	int ch;
-	while ((ch = getopt_long(argc, argv, "vhs:f:o:l:", long_options, NULL)) != -1) {
+	while ((ch = getopt_long(argc, argv, "vhs:f:o:", long_options, NULL)) != -1) {
 		switch (ch) {
 			case 'v':
 				opts.version = true;
@@ -50,9 +49,6 @@ struct program_opts getOptions(int &argc, char **&argv) {
 				break;
 			case 'o':
 				opts.output = optarg;
-				break;
-			case 'l':
-				opts.output_level = optarg;
 				break;
 			case 42:
 				opts.sorted = true;

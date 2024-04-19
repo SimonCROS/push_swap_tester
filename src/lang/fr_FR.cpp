@@ -13,7 +13,7 @@ const string getHelp() {
 	help += "\n";
 	help += "\033[1mSYNOPSIS\033[0m\n";
 	help += "     \033[1m./complexity\033[0m [\033[1m-vh\033[0m]\n";
-	help += "     \033[1m./complexity\033[0m [\033[1m-s\033[0m \033[4mseed\033[0m] [\033[1m-o\033[0m \033[4mfile\033[0m [\033[1m-l\033[0m \033[4mlevel\033[0m]] [\033[1m-f\033[0m \033[4mfile\033[0m] [\033[1m--seed\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
+	help += "     \033[1m./complexity\033[0m [\033[1m-s\033[0m \033[4mseed\033[0m] [\033[1m-o\033[0m \033[4mfile\033[0m] [\033[1m-f\033[0m \033[4mfile\033[0m] [\033[1m--seed\033[0m] \033[4mnumbers\033[0m \033[4miterations\033[0m [\033[4mgoal\033[0m] [\033[4mchecker\033[0m]\n";
 	help += "\n";
 	help += "\033[1mDESCRIPTION\033[0m\n";
 	help += "     L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.\n";
@@ -32,9 +32,6 @@ const string getHelp() {
 	help += "     \033[1m-o\033[0m \033[4moutput\033[0m, \033[1m--output\033[0m=\033[4moutput\033[0m\n";
 	help += "             Spécifie un fichier de sortie pour les logs.\n";
 	help += "     \n";
-	help += "     \033[1m-l\033[0m \033[4moutput-level\033[0m, \033[1m--output-level\033[0m=\033[4moutput-level\033[0m\n";
-	help += "             Si le\n";
-	help += "     \n";
 	help += "     \033[1m-f\033[0m \033[4mpush_swap\033[0m, \033[1m--file\033[0m=\033[4mpush_swap\033[0m\n";
 	help += "             Utilise \033[4mpush_swap\033[0m en tant qu'exécutable push_swap.\n";
 	help += "     \n";
@@ -50,7 +47,7 @@ void printStart(const program_opts& opts, const program_params& params) {
 	cout << endl;
 }
 
-void print(const program_params& params, int done, int mean, double stddev, int best, int worst, int successful, int ok) {
+void print_status(const program_params& params, int done, int mean, double stddev, int best, int worst, int successful, int ok) {
 	cout << "Pire = \033[31m" << (worst) << "\033[0m instructions" << endl;
 	cout << "Moyenne = \033[33m" << (mean) << "\033[0m instructions" << endl;
 	cout << "Meilleur = \033[36m" << (best) << "\033[0m instructions" << endl;
@@ -67,4 +64,5 @@ void print(const program_params& params, int done, int mean, double stddev, int 
 }
 
 void printEnd(const program_opts&, const program_params&) {
+	cout << "\033[38m" << getVersion() << "\033[0m" << endl;
 }
