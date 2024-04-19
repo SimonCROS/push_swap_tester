@@ -33,10 +33,12 @@ override OBJDIRS	:= $(sort $(dir $(OBJS)))
 all:		$(NAME)
 
 fr:
-			$(MAKE) LANG="fr_FR" re
+			touch src/lang/fr_FR.cpp
+			$(MAKE) LANG="fr_FR"
 
 en:
-			$(MAKE) LANG="en_GB" re
+			touch src/lang/en_GB.cpp
+			$(MAKE) LANG="en_GB"
 
 obj/%.o:	src/%.cpp $(HEADERS)
 			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes

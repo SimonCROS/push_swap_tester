@@ -63,4 +63,5 @@ void print_status(const program_params& params, int done, int mean, double stdde
 }
 
 void printEnd(const program_opts&, const program_params&) {
+	cout << "\033[38m" << getVersion() << "\033[0m" << endl;
 }
