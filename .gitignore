@@ -1,6 +1,8 @@
 complexity
 push_swap
 checker
+checker_linux
+checker_Mac
 
 # Prerequisites
 *.d

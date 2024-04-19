@@ -23,6 +23,9 @@ Les options suivantes sont disponibles :
 **-s** <ins>seed</ins>, **--seed**=<ins>seed</ins>\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Génère les nombres en fonction de la graine.
 
+**-o** <ins>output</ins>, **--output**=<ins>output</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spécifie un fichier de sortie pour les logs.
+
 **-f** <ins>push_swap</ins>, **--file**=<ins>push_swap</ins>\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilise <ins>push_swap</ins> en tant qu'exécutable push_swap.
 
@@ -37,4 +40,4 @@ Les options suivantes sont disponibles :
 ---
 
 Merci à [@mhouppin](https://github.com/mhouppin) pour l'inspiration visuelle du testeur.\
-Thanks [@42cursus-youkim](https://github.com/42cursus-youkim) for the translations.
+Thanks to [@42cursus-youkim](https://github.com/42cursus-youkim) for the translations.

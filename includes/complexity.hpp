@@ -12,6 +12,7 @@ struct program_opts {
 	bool					help;
 	bool					sorted;
 	optional<std::string>	program;
+	optional<std::string>	output;
 	optional<std::default_random_engine::result_type> seed;
 };
 
@@ -35,7 +36,7 @@ string exec(char **argv, optional<string> input = nullopt);
 
 // Print
 void printStart(const program_opts& opts, const program_params& params);
-void print(const program_params& params, int done, int mean, double stddev, int best, int worst, int successful, int ok);
+void print_status(const program_params& params, int done, int mean, double stddev, int best, int worst, int successful, int ok);
 void printEnd(const program_opts& opts, const program_params& params);
 
 #endif
