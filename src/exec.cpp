@@ -24,7 +24,7 @@ string exec(char **argv, optional<string> input) {
 	pipe(pipes[PARENT_READ_PIPE]);
 	pipe(pipes[PARENT_WRITE_PIPE]);
 
-	if(fork() == 0) { 
+	if(fork() == 0) {
 		dup2(CHILD_READ_FD, STDIN_FILENO);
 		dup2(CHILD_WRITE_FD, STDOUT_FILENO);
 		dup2(CHILD_WRITE_FD, STDERR_FILENO);
