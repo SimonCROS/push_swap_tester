@@ -1,6 +1,8 @@
 #ifndef COMPLEXITY_H
 #define COMPLEXITY_H
 
+#include <sstream>
+#include <iterator>
 #include <string>
 #include <optional>
 #include <random>
@@ -38,5 +40,21 @@ string exec(char **argv, optional<string> input = nullopt);
 void printStart(const program_opts& opts, const program_params& params);
 void print_status(const program_params& params, int done, int mean, double stddev, int best, int worst, int successful, int ok);
 void printEnd(const program_opts& opts, const program_params& params);
+
+template <typename Range, typename Value = typename Range::value_type>
+std::string join(Range const& elements, const char *const delimiter) {
+    std::ostringstream os;
+    auto b = begin(elements), e = end(elements);
+
+    if (b != e) {
+        std::copy(b, prev(e), std::ostream_iterator<Value>(os, delimiter));
+        b = prev(e);
+    }
+    if (b != e) {
+        os << *b;
+    }
+
+    return os.str();
+}
 
 #endif

@@ -11,7 +11,6 @@
 
 #include <langinfo.h>
 #include <signal.h>
-#include <boost/algorithm/string/join.hpp>
 
 using namespace std;
 
@@ -98,7 +97,7 @@ void launchTest()
 				if (opts.output.has_value() && !input_saved)
 				{
 					input_saved = true;
-					error_inputs.push_back(boost::algorithm::join(args, " "));
+					error_inputs.push_back(join(args, " "));
 				}
 			}
 		}
@@ -115,7 +114,7 @@ void launchTest()
 				if (opts.output.has_value() && !input_saved)
 				{
 					input_saved = true;
-					failed_inputs.push_back(boost::algorithm::join(args, " "));
+					failed_inputs.push_back(join(args, " "));
 				}
 			}
 		}
