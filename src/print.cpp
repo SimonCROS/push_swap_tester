@@ -13,7 +13,7 @@ void showCursor() {
 }
 
 const string getVersion() {
-	return "Complexity 1.7.0 (2024-04-19)";
+	return "Complexity 1.7.1 (2024-11-12)";
 }
 
 const string getUsage() {
