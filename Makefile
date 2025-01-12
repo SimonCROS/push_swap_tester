@@ -5,24 +5,21 @@ NAME				:= complexity
 # Commands
 
 override CPPC		:= clang++
-override CPPFLAGS	:= -std=c++17 -Wall -Wextra
+override CPPFLAGS	:= -std=c++20 -Wall -Wextra
 
 # Sources
 
-LANG				:= fr_FR
-
 override SRCS		:=							\
 				main.cpp						\
-				exec.cpp						\
-				args.cpp						\
-				print.cpp						\
-				utils.cpp						\
-				lang/$(LANG).cpp				\
+				executor.cpp					\
+				arguments_generator.cpp			\
 
 override HEADERS	:=							\
 				complexity.hpp					\
+				arguments_generator.hpp			\
+				executor.hpp					\
 
-override HEADERS	:= $(addprefix includes/,$(HEADERS))
+override HEADERS	:= $(addprefix src/,$(HEADERS))
 
 override OBJS		:= $(addprefix obj/, $(SRCS:.cpp=.o))
 
@@ -31,14 +28,6 @@ override OBJDIRS	:= $(sort $(dir $(OBJS)))
 # Rules
 
 all:		$(NAME)
-
-fr:
-			touch src/lang/fr_FR.cpp
-			$(MAKE) LANG="fr_FR"
-
-en:
-			touch src/lang/en_GB.cpp
-			$(MAKE) LANG="en_GB"
 
 obj/%.o:	src/%.cpp $(HEADERS)
 			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes
