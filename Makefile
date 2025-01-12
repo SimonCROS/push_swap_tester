@@ -5,12 +5,15 @@ NAME				:= complexity
 # Commands
 
 override CPPC		:= clang++
-override CPPFLAGS	:= -std=c++20 -Wall -Wextra
+override CPPFLAGS	:= -std=c++20 -Wall -Wextra -O3
 
 # Sources
 
 override SRCS		:=							\
 				main.cpp						\
+				utils.cpp						\
+				print.cpp						\
+				args.cpp						\
 				executor.cpp					\
 				arguments_generator.cpp			\
 

@@ -6,6 +6,9 @@
 
 ArgumentsGenerator::ArgumentsGenerator(const size_t numbersCount) : m_numbersCount(numbersCount), m_gen(m_rd())
 {
+    if (numbersCount > 1000000)
+        throw std::invalid_argument("The maximum number count is 1'000'000");
+
     m_numbers.reserve(numbersCount);
     m_buffer = new char[m_numbersCount * lengthPerNumber];
 }

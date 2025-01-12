@@ -47,7 +47,7 @@ class ArgumentsGenerator
 private:
     const size_t m_numbersCount;
 
-    std::random_device m_rd; // TODO check randomness
+    std::random_device m_rd;
     std::mt19937 m_gen;
     std::unordered_set<int> m_numbers;
     char* m_buffer;

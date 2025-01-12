@@ -63,6 +63,7 @@ auto Executor::execute(const std::string& program, ArgumentsIterator args) -> co
         waitpid(pid, &status, 0);
 
         if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            std::cout << m_output << std::endl;
             throw std::runtime_error("Child process failed with exit code " + std::to_string(WEXITSTATUS(status)));
         }
 
