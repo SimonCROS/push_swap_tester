@@ -106,45 +106,45 @@ auto printStatus(const program_params& params, const results_t& results) -> void
     if (prettyPrint())
     {
 #ifdef USE_FORMAT
-        std::cout << std::format("Worst = \033[31m{}\033[0m instructions\n", results.worst);
-        std::cout << std::format("Mean = \033[33m{:.1f}\033[0m instructions\n", mean);
-        std::cout << std::format("Best = \033[36m{}\033[0m instructions\n", results.best);
-        std::cout << std::format("Std. deviation = \033[93m{:.1f}\033[0m instructions\n", stddev);
+        std::cout << std::format("Worst = \033[31m{}\033[0m instructions    \n", results.worst);
+        std::cout << std::format("Mean = \033[33m{:.1f}\033[0m instructions    \n", mean);
+        std::cout << std::format("Best = \033[36m{}\033[0m instructions    \n", results.best);
+        std::cout << std::format("Std. deviation = \033[93m{:.1f}\033[0m instructions    \n", stddev);
 
         if (params.objective.has_value())
             std::cout << std::format(
-                "Objective = \033[94m{}\033[0m % under \033[94m{}\033[0m (\033[91m{}\033[0m above)\n",
+                "Objective = \033[94m{}\033[0m % under \033[94m{}\033[0m (\033[91m{}\033[0m above)    \n",
                 underObjective, params.objective.value(), results.aboveObjective);
         else
-            std::cout << "Objective = enter a number as the third argument\n";
+            std::cout << "Objective = enter a number as the third argument    \n";
 
         // if (params.checker.has_value())
         //     std::cout << "Precision = \033[97m" << (ok * 100 / done) << "\033[0m % OK (\033[91m" << (done - ok) << "\033[0m KO)   " << std::endl;
         // else
-        //     std::cout << "Precision = enter a tester as the fourth argument\n";
-        std::cout << "Failed = currently not available\n";
-        std::cout << std::format("\033[32m{}\033[0m % effective\n", percentDone);
+        //     std::cout << "Precision = enter a tester as the fourth argument    \n";
+        std::cout << "Failed = currently not available    \n";
+        std::cout << std::format("\033[32m{}\033[0m % effective    \n", percentDone);
 #else
-        std::cout << "Worst = \033[31m" << results.worst << "\033[0m instructions\n";
-        std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << mean << "\033[0m instructions\n";
-        std::cout << "Best = \033[36m" << results.best << "\033[0m instructions\n";
-        std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << stddev << "\033[0m instructions\n";
+        std::cout << "Worst = \033[31m" << results.worst << "\033[0m instructions    \n";
+        std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << mean << "\033[0m instructions    \n";
+        std::cout << "Best = \033[36m" << results.best << "\033[0m instructions    \n";
+        std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << stddev << "\033[0m instructions    \n";
 
         if (params.objective.has_value()) {
             std::cout << "Objective = \033[94m" << underObjective 
                 << "\033[0m % under \033[94m" << params.objective.value() 
-                << "\033[0m (\033[91m" << results.aboveObjective << "\033[0m above)\n";
+                << "\033[0m (\033[91m" << results.aboveObjective << "\033[0m above)    \n";
         } else {
-            std::cout << "Objective = enter a number as the third argument\n";
+            std::cout << "Objective = enter a number as the third argument    \n";
         }
 
         // if (params.checker.has_value())
         //     std::cout << "Precision = \033[97m" << (ok * 100 / done) << "\033[0m % OK (\033[91m" << (done - ok) << "\033[0m KO)   " << std::endl;
         // else
-        //     std::cout << "Precision = enter a tester as the fourth argument\n";
+        //     std::cout << "Precision = enter a tester as the fourth argument    \n";
 
-        std::cout << "Failed = currently not available\n";
-        std::cout << "\033[32m" << percentDone << "\033[0m % effective\n";
+        std::cout << "Failed = currently not available    \n";
+        std::cout << "\033[32m" << percentDone << "\033[0m % effective    \n";
 #endif
     }
     else

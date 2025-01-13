@@ -57,6 +57,8 @@ public:
 
     explicit ArgumentsGenerator(size_t numbersCount);
 
+    ~ArgumentsGenerator();
+
     auto generate(int min, int max) -> ArgumentsIterator;
 };
 

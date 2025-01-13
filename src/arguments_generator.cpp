@@ -13,6 +13,11 @@ ArgumentsGenerator::ArgumentsGenerator(const size_t numbersCount) : m_numbersCou
     m_buffer = new char[m_numbersCount * lengthPerNumber];
 }
 
+ArgumentsGenerator::~ArgumentsGenerator()
+{
+    delete[] m_buffer;
+}
+
 auto ArgumentsGenerator::generate(const int min, const int max) -> ArgumentsIterator
 {
     m_numbers.clear();

@@ -37,7 +37,7 @@ auto worker(const program_opts& opts, const program_params& params) -> void
         if (current == 0)
             break;
 
-        auto& buffer = executor.execute("/Users/simoncros/Projects/push_swap/push_swap",
+        auto& buffer = executor.execute(params.program,
                                         generator.generate(std::numeric_limits<int>::min(),
                                                            std::numeric_limits<int>::max()));
         // const auto lines = std::ranges::count(buffer, '\n');
