@@ -3,7 +3,9 @@
 //
 
 #include <iostream>
-#include <format>
+#ifndef USE_FORMAT
+#include <iomanip>
+#endif
 
 #include "complexity.hpp"
 
@@ -69,11 +71,17 @@ auto printStart(const program_opts& opts, const program_params& params) -> void
     if (prettyPrint())
     {
         std::cout << getVersion() << '\n';
+#ifdef USE_FORMAT
         std::cout << std::format(
             "\033[97mStarting the test : \033[95m{}\033[97m elements, \033[95m{}\033[97m iterations\033[0m",
             params.numbers, params.iterations);
         if (opts.seed.has_value())
             std::cout << std::format(" (seed {})", opts.seed.value());
+#else
+        std::cout << "\033[97mStarting the test : \033[95m" << params.numbers << "\033[97m elements, \033[95m" << params.iterations << "\033[97m iterations\033[0m";
+        if (opts.seed.has_value())
+            std::cout << " (seed " << opts.seed.value() << ")";
+#endif
         std::cout << std::endl;
     }
 }
@@ -97,6 +105,7 @@ auto printStatus(const program_params& params, const results_t& results) -> void
 
     if (prettyPrint())
     {
+#ifdef USE_FORMAT
         std::cout << std::format("Worst = \033[31m{}\033[0m instructions\n", results.worst);
         std::cout << std::format("Mean = \033[33m{:.1f}\033[0m instructions\n", mean);
         std::cout << std::format("Best = \033[36m{}\033[0m instructions\n", results.best);
@@ -115,9 +124,32 @@ auto printStatus(const program_params& params, const results_t& results) -> void
         //     std::cout << "Precision = enter a tester as the fourth argument\n";
         std::cout << "Failed = currently not available\n";
         std::cout << std::format("\033[32m{}\033[0m % effective\n", percentDone);
+#else
+        std::cout << "Worst = \033[31m" << results.worst << "\033[0m instructions\n";
+        std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << mean << "\033[0m instructions\n";
+        std::cout << "Best = \033[36m" << results.best << "\033[0m instructions\n";
+        std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << stddev << "\033[0m instructions\n";
+
+        if (params.objective.has_value()) {
+            std::cout << "Objective = \033[94m" << underObjective 
+                << "\033[0m % under \033[94m" << params.objective.value() 
+                << "\033[0m (\033[91m" << results.aboveObjective << "\033[0m above)\n";
+        } else {
+            std::cout << "Objective = enter a number as the third argument\n";
+        }
+
+        // if (params.checker.has_value())
+        //     std::cout << "Precision = \033[97m" << (ok * 100 / done) << "\033[0m % OK (\033[91m" << (done - ok) << "\033[0m KO)   " << std::endl;
+        // else
+        //     std::cout << "Precision = enter a tester as the fourth argument\n";
+
+        std::cout << "Failed = currently not available\n";
+        std::cout << "\033[32m" << percentDone << "\033[0m % effective\n";
+#endif
     }
     else
     {
+#ifdef USE_FORMAT
         std::cout << std::format(
             "{{\n"
             "  \"elements\": {},\n"
@@ -137,5 +169,17 @@ auto printStatus(const program_params& params, const results_t& results) -> void
             results.best,
             stddev,
             results.aboveObjective);
+#else
+        std::cout << "{\n"
+            << "  \"elements\": " << params.numbers << ",\n"
+            << "  \"iterations\": " << params.iterations << ",\n"
+            << "  \"objective\": " << params.objective.value_or(-1) << ",\n"
+            << "  \"worst\": " << results.worst << ",\n"
+            << "  \"mean\": " << std::fixed << std::setprecision(6) << mean << ",\n"
+            << "  \"best\": " << results.best << ",\n"
+            << "  \"stddev\": " << std::fixed << std::setprecision(6) << stddev << ",\n"
+            << "  \"aboveObjective\": " << results.aboveObjective << "\n"
+            << "}\n";
+#endif
     }
 }

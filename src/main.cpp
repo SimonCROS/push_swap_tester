@@ -8,10 +8,11 @@
 #include <atomic>
 #include <mutex>
 #include <thread>
-#include <format>
+#include <algorithm>
 #include <iomanip>
 #include <limits>
 #include <unistd.h>
+#include <signal.h>
 
 #include "complexity.hpp"
 #include "executor.hpp"
@@ -39,10 +40,17 @@ auto worker(const program_opts& opts, const program_params& params) -> void
         auto& buffer = executor.execute("/Users/simoncros/Projects/push_swap/push_swap",
                                         generator.generate(std::numeric_limits<int>::min(),
                                                            std::numeric_limits<int>::max()));
-        const auto lines = std::ranges::count(buffer, '\n');
-        if (lines >= std::numeric_limits<unsigned int>::max())
-            throw std::runtime_error(std::format("push_swap printed more than {} lines",
-                                                 std::numeric_limits<unsigned int>::max()));
+        // const auto lines = std::ranges::count(buffer, '\n');
+        const auto lines = std::count(buffer.begin(), buffer.end(), '\n');
+        if (lines >= std::numeric_limits<unsigned int>::max()) {
+            throw std::runtime_error(
+#ifdef USE_FORMAT
+                std::format("push_swap printed more than {} lines", std::numeric_limits<unsigned int>::max())
+#else
+                std::string("push_swap printed more than ") + std::to_string(std::numeric_limits<unsigned int>::max()) + "lines"
+#endif
+            );
+        }
 
         {
             std::scoped_lock lock(results_access);

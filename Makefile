@@ -4,7 +4,7 @@ NAME				:= complexity
 
 # Commands
 
-override CPPC		:= clang++
+override CPPC		:= c++
 override CPPFLAGS	:= -std=c++20 -Wall -Wextra -O3
 
 # Sources

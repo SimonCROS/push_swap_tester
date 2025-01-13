@@ -1,7 +1,8 @@
 #include "complexity.hpp"
 
 #include <iostream>
-#include <format>
+
+#include <version>
 
 #include <getopt.h>
 
@@ -18,11 +19,19 @@ static auto parseNumber(const char* str, const int min) -> uint32_t
     }
     catch (...)
     {
+#ifdef USE_FORMAT
         throw std::invalid_argument(std::format("{} is not a valid number", str));
+#else
+        throw std::invalid_argument(std::string() + str + " is not a valid number");
+#endif
     }
 
     if (number < min)
+#ifdef USE_FORMAT
         throw std::invalid_argument(std::format("{} must be at least equal to {}", str, std::to_string(min)));
+#else
+        throw std::invalid_argument(std::string() + str + " must be at least equal to " + std::to_string(min));
+#endif
     return number;
 }
 
