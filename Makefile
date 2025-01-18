@@ -19,8 +19,9 @@ override SRCS		:=							\
 
 override HEADERS	:=							\
 				complexity.hpp					\
-				arguments_generator.hpp			\
 				executor.hpp					\
+				arguments_generator.hpp			\
+				thread_safe_random.hpp			\
 
 override HEADERS	:= $(addprefix src/,$(HEADERS))
 

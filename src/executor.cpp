@@ -64,6 +64,11 @@ auto Executor::execute(const std::string& program, ArgumentsIterator args) -> co
 
         if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
             std::cout << m_output << std::endl;
+            args.reset();
+            while (const auto arg = args.next())
+                std::cout << arg << " ";
+            std::cout << std::endl;
+            
             throw std::runtime_error("Child process failed with exit code " + std::to_string(WEXITSTATUS(status)));
         }
 

@@ -66,21 +66,17 @@ auto getHelp() -> std::string
         "             Specifies the amount of threads to use (default: 6)\n";
 }
 
-auto printStart(const program_opts& opts, const program_params& params) -> void
+auto printStart(const program_opts& opts, const program_params& params, const ThreadSafeRandom::seed_type seed) -> void
 {
     if (prettyPrint())
     {
         std::cout << getVersion() << '\n';
 #ifdef USE_FORMAT
         std::cout << std::format(
-            "\033[97mStarting the test : \033[95m{}\033[97m elements, \033[95m{}\033[97m iterations\033[0m",
-            params.numbers, params.iterations);
-        if (opts.seed.has_value())
-            std::cout << std::format(" (seed {})", opts.seed.value());
+            "\033[97mStarting the test : \033[95m{}\033[97m elements, \033[95m{}\033[97m iterations\033[0m (seed {})",
+            params.numbers, params.iterations, seed);
 #else
-        std::cout << "\033[97mStarting the test : \033[95m" << params.numbers << "\033[97m elements, \033[95m" << params.iterations << "\033[97m iterations\033[0m";
-        if (opts.seed.has_value())
-            std::cout << " (seed " << opts.seed.value() << ")";
+        std::cout << "\033[97mStarting the test : \033[95m" << params.numbers << "\033[97m elements, \033[95m" << params.iterations << "\033[97m iterations\033[0m" << " (seed " << seed << ")";
 #endif
         std::cout << std::endl;
     }

@@ -5,11 +5,9 @@
 #ifndef RANDOM_LIST_ENGINE_HPP
 #define RANDOM_LIST_ENGINE_HPP
 
-#include <vector>
-#include <random>
-#include <stdexcept>
-#include <iostream>
 #include <unordered_set>
+
+#include "thread_safe_random.hpp"
 
 class ArgumentsGenerator;
 
@@ -23,13 +21,15 @@ private:
     char* m_pos;
     size_t m_step;
 
-    ArgumentsIterator(char* begin, char* end, const size_t step) : m_begin(begin), m_end(end), m_pos(begin), m_step(step)
+    ArgumentsIterator(char* begin, char* end, const size_t step) : m_begin(begin), m_end(end), m_pos(begin),
+                                                                   m_step(step)
     {
     }
 
 public:
     [[nodiscard]] auto begin() const -> const char* { return m_begin; }
     [[nodiscard]] auto end() const -> const char* { return m_end; }
+    auto reset() -> void { m_pos = m_begin; }
 
     auto next() -> char*
     {
@@ -47,8 +47,6 @@ class ArgumentsGenerator
 private:
     const size_t m_numbersCount;
 
-    std::random_device m_rd;
-    std::mt19937 m_gen;
     std::unordered_set<int> m_numbers;
     char* m_buffer;
 
@@ -59,7 +57,7 @@ public:
 
     ~ArgumentsGenerator();
 
-    auto generate(int min, int max) -> ArgumentsIterator;
+    auto generate(ThreadSafeRandom& random, int min, int max) -> ArgumentsIterator;
 };
 
 #endif //RANDOM_LIST_ENGINE_HPP

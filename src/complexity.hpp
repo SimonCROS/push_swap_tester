@@ -5,6 +5,8 @@
 #include <optional>
 #include <random>
 
+#include "thread_safe_random.hpp"
+
 #if __cpp_lib_format >= 201907L
 #define USE_FORMAT
 #include <format>
@@ -18,7 +20,7 @@ struct program_opts
     uint8_t threads{6};
     std::optional<std::string> program;
     std::optional<std::string> output;
-    std::optional<std::random_device::result_type> seed;
+    std::optional<ThreadSafeRandom::seed_type> seed;
 };
 
 struct program_params
@@ -47,7 +49,7 @@ auto showCursor() -> void;
 auto getVersion() -> std::string_view;
 auto getUsage() -> std::string_view;
 auto getHelp() -> std::string;
-auto printStart(const program_opts& opts, const program_params& params) -> void;
+auto printStart(const program_opts& opts, const program_params& params, ThreadSafeRandom::seed_type seed) -> void;
 auto printStatus(const program_params& params, const results_t& results) -> void;
 
 auto isExecutable(const std::string& path) -> bool;

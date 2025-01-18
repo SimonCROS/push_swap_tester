@@ -9,7 +9,7 @@ Compile with the following command
 ## Usage
 
 > [!WARNING]  
-> This version is a beta version. Checker, `-o` and `-s` are currently not available.\
+> This version is a beta version. Checker and `-o` are currently not available.\
 > If you find a bug, please report it to this pull request: https://github.com/SimonCROS/push_swap_tester/pull/6.
 
 **./complexity** \[**-vh**\] \[**-s** <ins>seed</ins>\] \[**-f** <ins>push_swap</ins>\] \[**-t** <ins>threads</ins>\] <ins>numbers</ins> <ins>iterations</ins> \[<ins>goal</ins>\] \[<ins>checker</ins>\]
