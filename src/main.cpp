@@ -74,9 +74,6 @@ auto worker(const program_opts& opts, const program_params& params,
 
 auto monitor(const program_params& params) -> void
 {
-    if (!prettyPrint())
-        return;
-
     while (!stopWorkers.load(std::memory_order_relaxed))
     {
         if (remaining.load(std::memory_order_relaxed) == 0)
@@ -147,10 +144,16 @@ auto main(int argc, char* argv[]) -> int
         threads.emplace_back(worker, opts, params, std::reference_wrapper(random));
 
     hideCursor();
-    printStart(opts, params, seed);
-    monitor(params);
+    if (prettyPrint() && !opts.json)
+    {
+        printStart(opts, params, seed);
+        monitor(params);
+    }
     waitAllThreads(threads);
-    printStatus(params, results);
+    if ((prettyPrint() || opts.noJson) && !opts.json)
+        printStatus(params, results);
+    else
+        printJson(params, results, seed);
     showCursor();
 
     if (results.aboveObjective > 0)

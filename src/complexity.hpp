@@ -17,6 +17,8 @@ struct program_opts
     bool version;
     bool help;
     bool usage;
+    bool json;
+    bool noJson;
     uint8_t threads{6};
     std::optional<std::string> program;
     std::optional<std::string> output;
@@ -42,7 +44,17 @@ struct results_t
     uint32_t aboveObjective{0};
 };
 
+struct status_t
+{
+    double mean;
+    double stddev;
+    uint64_t underObjective;
+    uint32_t percentDone;
+};
+
 auto prettyPrint() -> bool;
+
+auto getStatus(const program_params& params, const results_t& results) -> status_t;
 
 auto hideCursor() -> void;
 auto showCursor() -> void;
@@ -51,6 +63,7 @@ auto getUsage() -> std::string_view;
 auto getHelp() -> std::string;
 auto printStart(const program_opts& opts, const program_params& params, ThreadSafeRandom::seed_type seed) -> void;
 auto printStatus(const program_params& params, const results_t& results) -> void;
+auto printJson(const program_params& params, const results_t& results, ThreadSafeRandom::seed_type seed) -> void;
 
 auto isExecutable(const std::string& path) -> bool;
 auto assertExecutable(const std::string& path) -> void;

@@ -53,6 +53,9 @@ auto getHelp() -> std::string
         "     \033[1m-h\033[0m, \033[1m--help\033[0m\n"
         "             Show this message\n"
         "     \n"
+        "     \033[1m--json\033[0m, \033[1m--no-json\033[0m\n"
+        "             Toggle JSON output on or off. By default, JSON output is enabled for non-TTY environments\n"
+        "     \n"
         "     \033[1m-s\033[0m \033[4mseed\033[0m, \033[1m--seed\033[0m=\033[4mseed\033[0m\n"
         "             Generates the numbers based on the seed\n"
         "     \n"
@@ -68,114 +71,50 @@ auto getHelp() -> std::string
 
 auto printStart(const program_opts& opts, const program_params& params, const ThreadSafeRandom::seed_type seed) -> void
 {
-    if (prettyPrint())
-    {
-        std::cout << getVersion() << '\n';
-#ifdef USE_FORMAT
-        std::cout << std::format(
-            "\033[97mStarting the test : \033[95m{}\033[97m elements, \033[95m{}\033[97m iterations\033[0m (seed {})",
-            params.numbers, params.iterations, seed);
-#else
-        std::cout << "\033[97mStarting the test : \033[95m" << params.numbers << "\033[97m elements, \033[95m" << params.iterations << "\033[97m iterations\033[0m" << " (seed " << seed << ")";
-#endif
-        std::cout << std::endl;
-    }
+    std::cout << getVersion() << '\n';
+    std::cout << "\033[97mStarting the test : \033[95m" << params.numbers << "\033[97m elements, \033[95m" << params.iterations << "\033[97m iterations\033[0m" << " (seed " << seed << ")";
+    std::cout << std::endl;
 }
 
 auto printStatus(const program_params& params, const results_t& results) -> void
 {
-    double mean = 0;
-    double stddev = 0;
-    uint64_t underObjective = 0;
-    uint32_t percentDone = 0;
+    const status_t&& status = getStatus(params, results);
 
-    if (results.done > 0)
-    {
-        mean = static_cast<double>(results.total) / results.done;
-        for (const uint32_t result : results.results)
-            stddev += pow(mean - result, 2.0);
-        stddev = sqrt(stddev / results.done);
-        underObjective = (results.done - results.aboveObjective) * 100 / results.done;
-        percentDone = results.done * 100 / params.iterations;
+    std::cout << "Worst = \033[31m" << results.worst << "\033[0m instructions\033[K\n";
+    std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << status.mean << "\033[0m instructions\033[K\n";
+    std::cout << "Best = \033[36m" << results.best << "\033[0m instructions\033[K\n";
+    std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << status.stddev << "\033[0m instructions\033[K\n";
+
+    if (params.objective.has_value()) {
+        std::cout << "Objective = \033[94m" << status.underObjective
+            << "\033[0m % under \033[94m" << params.objective.value()
+            << "\033[0m (\033[91m" << results.aboveObjective << "\033[0m above)\033[K\n";
+    } else {
+        std::cout << "Objective = enter a number as the third argument\033[K\n";
     }
 
-    if (prettyPrint())
-    {
-#ifdef USE_FORMAT
-        std::cout << std::format("Worst = \033[31m{}\033[0m instructions\033[K\n", results.worst);
-        std::cout << std::format("Mean = \033[33m{:.1f}\033[0m instructions\033[K\n", mean);
-        std::cout << std::format("Best = \033[36m{}\033[0m instructions\033[K\n", results.best);
-        std::cout << std::format("Std. deviation = \033[93m{:.1f}\033[0m instructions\033[K\n", stddev);
+    // if (params.checker.has_value())
+    //     std::cout << "Precision = \033[97m" << (ok * 100 / done) << "\033[0m % OK (\033[91m" << (done - ok) << "\033[0m KO)\033[K\n" << std::endl;
+    // else
+    //     std::cout << "Precision = enter a tester as the fourth argument\033[K\n";
 
-        if (params.objective.has_value())
-            std::cout << std::format(
-                "Objective = \033[94m{}\033[0m % under \033[94m{}\033[0m (\033[91m{}\033[0m above)\033[K\n",
-                underObjective, params.objective.value(), results.aboveObjective);
-        else
-            std::cout << "Objective = enter a number as the third argument\033[K\n";
+    std::cout << "Failed = currently not available\033[K\n";
+    std::cout << "\033[32m" << status.percentDone << "\033[0m % effective\033[K\n";
+}
 
-        // if (params.checker.has_value())
-        //     std::cout << "Precision = \033[97m" << (ok * 100 / done) << "\033[0m % OK (\033[91m" << (done - ok) << "\033[0m KO)\033[K\n" << std::endl;
-        // else
-        //     std::cout << "Precision = enter a tester as the fourth argument\033[K\n";
-        std::cout << "Failed = currently not available\033[K\n";
-        std::cout << std::format("\033[32m{}\033[0m % effective\033[K\n", percentDone);
-#else
-        std::cout << "Worst = \033[31m" << results.worst << "\033[0m instructions\033[K\n";
-        std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << mean << "\033[0m instructions\033[K\n";
-        std::cout << "Best = \033[36m" << results.best << "\033[0m instructions\033[K\n";
-        std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << stddev << "\033[0m instructions\033[K\n";
+auto printJson(const program_params& params, const results_t& results, const ThreadSafeRandom::seed_type seed) -> void
+{
+    const status_t&& status = getStatus(params, results);
 
-        if (params.objective.has_value()) {
-            std::cout << "Objective = \033[94m" << underObjective 
-                << "\033[0m % under \033[94m" << params.objective.value() 
-                << "\033[0m (\033[91m" << results.aboveObjective << "\033[0m above)\033[K\n";
-        } else {
-            std::cout << "Objective = enter a number as the third argument\033[K\n";
-        }
-
-        // if (params.checker.has_value())
-        //     std::cout << "Precision = \033[97m" << (ok * 100 / done) << "\033[0m % OK (\033[91m" << (done - ok) << "\033[0m KO)\033[K\n" << std::endl;
-        // else
-        //     std::cout << "Precision = enter a tester as the fourth argument\033[K\n";
-
-        std::cout << "Failed = currently not available\033[K\n";
-        std::cout << "\033[32m" << percentDone << "\033[0m % effective\033[K\n";
-#endif
-    }
-    else
-    {
-#ifdef USE_FORMAT
-        std::cout << std::format(
-            "{{\n"
-            "  \"elements\": {},\n"
-            "  \"iterations\": {},\n"
-            "  \"objective\": {},\n"
-            "  \"worst\": {},\n"
-            "  \"mean\": {:.6f},\n"
-            "  \"best\": {},\n"
-            "  \"stddev\": {:.6f},\n"
-            "  \"aboveObjective\": {}\n"
-            "}}\n",
-            params.numbers,
-            params.iterations,
-            params.objective.value_or(-1),
-            results.worst,
-            mean,
-            results.best,
-            stddev,
-            results.aboveObjective);
-#else
-        std::cout << "{\n"
-            << "  \"elements\": " << params.numbers << ",\n"
-            << "  \"iterations\": " << params.iterations << ",\n"
-            << "  \"objective\": " << params.objective.value_or(-1) << ",\n"
-            << "  \"worst\": " << results.worst << ",\n"
-            << "  \"mean\": " << std::fixed << std::setprecision(6) << mean << ",\n"
-            << "  \"best\": " << results.best << ",\n"
-            << "  \"stddev\": " << std::fixed << std::setprecision(6) << stddev << ",\n"
-            << "  \"aboveObjective\": " << results.aboveObjective << "\n"
-            << "}\n";
-#endif
-    }
+    std::cout << "{\n"
+        << "  \"elements\": " << params.numbers << ",\n"
+        << "  \"seed\": " << seed << ",\n"
+        << "  \"iterations\": " << params.iterations << ",\n"
+        << "  \"objective\": " << params.objective.value_or(-1) << ",\n"
+        << "  \"worst\": " << results.worst << ",\n"
+        << "  \"mean\": " << std::fixed << std::setprecision(6) << status.mean << ",\n"
+        << "  \"best\": " << results.best << ",\n"
+        << "  \"stddev\": " << std::fixed << std::setprecision(6) << status.stddev << ",\n"
+        << "  \"aboveObjective\": " << results.aboveObjective << "\n"
+        << "}\n";
 }

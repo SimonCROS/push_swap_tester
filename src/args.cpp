@@ -35,6 +35,9 @@ static auto parseNumber(const char* str, const int min) -> uint32_t
     return number;
 }
 
+#define VALUE_JSON 1
+#define VALUE_NO_JSON 2
+
 auto getOptions(int& argc, char**& argv) -> program_opts
 {
     static option long_options[] = {
@@ -44,6 +47,8 @@ auto getOptions(int& argc, char**& argv) -> program_opts
         {"file", required_argument, nullptr, 'f'},
         {"seed", required_argument, nullptr, 's'},
         {"threads", required_argument, nullptr, 't'},
+        {"json", no_argument, nullptr, VALUE_JSON},
+        {"no-json", no_argument, nullptr, VALUE_NO_JSON},
         {nullptr, 0, nullptr, 0}
     };
 
@@ -71,6 +76,12 @@ auto getOptions(int& argc, char**& argv) -> program_opts
             break;
         case 's':
             opts.seed = parseNumber(optarg, 0);
+            break;
+        case VALUE_JSON:
+            opts.json = true;
+            break;
+        case VALUE_NO_JSON:
+            opts.noJson = true;
             break;
         default:
             opts.usage = true;

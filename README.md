@@ -22,6 +22,9 @@ Following options are available :
 **-h**, **--help**\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show help
 
+**--json**, **--no-json**\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toggle JSON output on or off. By default, JSON output is enabled for non-TTY environments
+
 **-s** <ins>seed</ins>, **--seed**=<ins>seed</ins>\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generates the numbers based on the seed
 
