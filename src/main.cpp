@@ -47,12 +47,8 @@ auto worker(const program_opts& opts, const program_params& params,
         if (lines >= std::numeric_limits<unsigned int>::max())
         {
             throw std::runtime_error(
-#ifdef USE_FORMAT
-                std::format("push_swap printed more than {} lines", std::numeric_limits<unsigned int>::max())
-#else
                 std::string("push_swap printed more than ") + std::to_string(std::numeric_limits<unsigned int>::max()) +
                 "lines"
-#endif
             );
         }
 

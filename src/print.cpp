@@ -3,9 +3,7 @@
 //
 
 #include <iostream>
-#ifndef USE_FORMAT
 #include <iomanip>
-#endif
 
 #include "complexity.hpp"
 

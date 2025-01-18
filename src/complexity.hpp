@@ -7,11 +7,6 @@
 
 #include "thread_safe_random.hpp"
 
-#if __cpp_lib_format >= 201907L
-#define USE_FORMAT
-#include <format>
-#endif
-
 struct program_opts
 {
     bool version;
