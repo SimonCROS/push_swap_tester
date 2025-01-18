@@ -4,6 +4,8 @@
 
 #include "arguments_generator.hpp"
 
+#include <iostream>
+
 #include "thread_safe_random.hpp"
 
 ArgumentsGenerator::ArgumentsGenerator(const size_t numbersCount) : m_numbersCount(numbersCount)
@@ -34,7 +36,7 @@ auto ArgumentsGenerator::generate(ThreadSafeRandom& random, const int min, const
         if (m_numbers.insert(number).second)
         {
             const size_t index = (m_numbers.size() - 1) * lengthPerNumber;
-            snprintf(m_buffer + index, lengthPerNumber - 1, "%d", number);
+            snprintf(m_buffer + index, lengthPerNumber, "%d", number);
         }
     }
 
