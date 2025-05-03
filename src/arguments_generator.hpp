@@ -45,19 +45,22 @@ public:
 class ArgumentsGenerator
 {
 private:
+    std::mt19937 m_generator;
     const size_t m_numbersCount;
 
-    std::unordered_set<int> m_numbers;
+    std::vector<int> m_numbers;
     char* m_buffer;
 
 public:
     static constexpr size_t lengthPerNumber = 12; // length + null terminator
 
-    explicit ArgumentsGenerator(size_t numbersCount);
-
+    explicit ArgumentsGenerator(ThreadSafeRandom& random, size_t numbersCount);
     ~ArgumentsGenerator();
 
-    auto generate(ThreadSafeRandom& random, int min, int max) -> ArgumentsIterator;
+    auto generate() -> ArgumentsIterator;
+
+private:
+    auto populate_unique_numbers() -> void;
 };
 
 #endif //RANDOM_LIST_ENGINE_HPP

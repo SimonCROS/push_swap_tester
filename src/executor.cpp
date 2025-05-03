@@ -15,7 +15,7 @@
 
 #include "executor.hpp"
 
-static int setNonblocking(const int fd)
+static auto setNonblocking(const int fd) -> int
 {
     const int flags = fcntl(fd, F_GETFL, 0);
     if (flags == -1) return -1;

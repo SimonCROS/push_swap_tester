@@ -6,16 +6,17 @@
 
 #include <charconv>
 #include <iostream>
+#include <algorithm>
 
 #include "thread_safe_random.hpp"
 
-ArgumentsGenerator::ArgumentsGenerator(const size_t numbersCount) : m_numbersCount(numbersCount)
+ArgumentsGenerator::ArgumentsGenerator(ThreadSafeRandom& random, const size_t numbersCount) : m_generator(random()), m_numbersCount(numbersCount)
 {
     if (numbersCount > 1000000)
         throw std::invalid_argument("The maximum number count is 1'000'000");
 
-    m_numbers.reserve(numbersCount);
     m_buffer = new char[m_numbersCount * lengthPerNumber];
+    populate_unique_numbers();
 }
 
 ArgumentsGenerator::~ArgumentsGenerator()
@@ -23,24 +24,40 @@ ArgumentsGenerator::~ArgumentsGenerator()
     delete[] m_buffer;
 }
 
-auto ArgumentsGenerator::generate(ThreadSafeRandom& random, const int min, const int max) -> ArgumentsIterator
+auto ArgumentsGenerator::generate() -> ArgumentsIterator
 {
-    m_numbers.clear();
     std::fill_n(m_buffer, m_numbersCount * lengthPerNumber, 0);
 
-    std::mt19937 generator(random());
-    std::uniform_int_distribution<int> dist(min, max); // Uniform distribution in range [min, max]
-    while (m_numbers.size() < m_numbersCount)
+    std::shuffle(std::begin(m_numbers), std::end(m_numbers), m_generator);
+    for (int i = 0; i < m_numbersCount; ++i)
     {
-        const int number = dist(generator);
-
-        // Try to insert the number. If insertion succeeded, add it to the buffer
-        if (m_numbers.insert(number).second)
-        {
-            const size_t index = (m_numbers.size() - 1) * lengthPerNumber;
-            std::to_chars(m_buffer + index, m_buffer + index + lengthPerNumber, number);
-        }
+        const size_t buffer_offset = i * lengthPerNumber;
+        std::to_chars(m_buffer + buffer_offset, m_buffer + buffer_offset + lengthPerNumber, m_numbers[i]);
     }
 
     return {m_buffer, m_buffer + (m_numbersCount * lengthPerNumber), lengthPerNumber};
+}
+
+auto ArgumentsGenerator::populate_unique_numbers() -> void
+{
+    constexpr int min = std::numeric_limits<int>::min();
+    constexpr int max = std::numeric_limits<int>::max();
+
+    m_numbers.reserve(m_numbersCount);
+    m_numbers.clear();
+
+    std::unordered_set<int> uniqueNumbers;
+    uniqueNumbers.reserve(m_numbersCount);
+
+    std::uniform_int_distribution<int> dice(min, max); // Uniform distribution in range [min, max]
+    while (m_numbers.size() < m_numbersCount)
+    {
+        const int number = dice(m_generator);
+
+        // Try to insert the number. If insertion succeeded, add it to the list
+        if (uniqueNumbers.insert(number).second)
+        {
+            m_numbers.push_back(number);
+        }
+    }
 }
