@@ -22,7 +22,7 @@ static int setNonblocking(const int fd)
     return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 }
 
-auto Executor::execute(const std::string& program, ArgumentsIterator args) -> const std::string&
+auto Executor::execute(const std::string& program, ArgumentsIterator args) -> size_t
 {
     m_output.clear();
     m_execArgs.clear();
@@ -139,6 +139,6 @@ auto Executor::execute(const std::string& program, ArgumentsIterator args) -> co
             throw std::runtime_error("Child process failed with exit code " + std::to_string(WEXITSTATUS(status)));
         }
 
-        return m_output;
+        return lines;
     }
 }

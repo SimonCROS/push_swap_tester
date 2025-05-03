@@ -38,12 +38,10 @@ auto worker(const program_opts& opts, const program_params& params,
         if (current == 0)
             break;
 
-        auto& buffer = executor.execute(params.program,
+        const auto lines = executor.execute(params.program,
                                         generator.generate(random,
                                                            std::numeric_limits<int>::min(),
                                                            std::numeric_limits<int>::max()));
-        // const auto lines = std::ranges::count(buffer, '\n');
-        const auto lines = std::count(buffer.begin(), buffer.end(), '\n');
         if (lines >= std::numeric_limits<unsigned int>::max())
         {
             throw std::runtime_error(

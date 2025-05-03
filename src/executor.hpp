@@ -25,7 +25,7 @@ public:
         m_execArgs.reserve(args + 2); // + 1 for program, + 1 for null termination
     }
 
-    auto execute(const std::string& program, ArgumentsIterator args) -> const std::string&;
+    auto execute(const std::string& program, ArgumentsIterator args) -> size_t;
 };
 
 #endif //EXECUTOR_HPP
