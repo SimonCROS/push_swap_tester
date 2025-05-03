@@ -96,7 +96,7 @@ auto Executor::execute(const std::string& program, ArgumentsIterator args) -> si
                 break;
             }
 
-            const int events = poll(pfds, 2, 0);
+            const int events = poll(pfds, 2, 5);
             if (events == -1)
                 break;
             if (events == 0)

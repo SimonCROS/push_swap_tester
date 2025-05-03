@@ -4,6 +4,7 @@
 
 #include "arguments_generator.hpp"
 
+#include <charconv>
 #include <iostream>
 
 #include "thread_safe_random.hpp"
@@ -25,6 +26,7 @@ ArgumentsGenerator::~ArgumentsGenerator()
 auto ArgumentsGenerator::generate(ThreadSafeRandom& random, const int min, const int max) -> ArgumentsIterator
 {
     m_numbers.clear();
+    std::fill_n(m_buffer, m_numbersCount * lengthPerNumber, 0);
 
     std::mt19937 generator(random());
     std::uniform_int_distribution<int> dist(min, max); // Uniform distribution in range [min, max]
@@ -36,7 +38,7 @@ auto ArgumentsGenerator::generate(ThreadSafeRandom& random, const int min, const
         if (m_numbers.insert(number).second)
         {
             const size_t index = (m_numbers.size() - 1) * lengthPerNumber;
-            snprintf(m_buffer + index, lengthPerNumber, "%d", number);
+            std::to_chars(m_buffer + index, m_buffer + index + lengthPerNumber, number);
         }
     }
 
