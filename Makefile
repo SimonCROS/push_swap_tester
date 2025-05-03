@@ -4,8 +4,7 @@ NAME				:= complexity
 
 # Commands
 
-override CPPC		:= c++
-override CPPFLAGS	:= -std=c++20 -Wall -Wextra -O3
+CXXFLAGS			:= -std=c++17 -Wall -Wextra -O3
 
 # Sources
 
@@ -34,7 +33,7 @@ override OBJDIRS	:= $(sort $(dir $(OBJS)))
 all:		$(NAME)
 
 obj/%.o:	src/%.cpp $(HEADERS)
-			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes
+			$(CXX) $(CXXFLAGS) -c $< -o $@ -Iincludes
 
 $(OBJS):	| $(OBJDIRS)
 
@@ -42,7 +41,7 @@ $(OBJDIRS):
 			mkdir -p $@
 
 $(NAME):	$(OBJS)
-			$(CPPC) $(CPPFLAGS) -o $@ $(OBJS)
+			$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
 
 clean:
 			rm -rf obj
