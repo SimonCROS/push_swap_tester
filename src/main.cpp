@@ -28,7 +28,7 @@ auto worker(const program_opts& opts, const program_params& params,
             const std::reference_wrapper<ThreadSafeRandom> random) -> void
 {
     Executor executor;
-    ArgumentsGenerator generator(random, params.numbers);
+    ArgumentsGenerator generator(params.numbers);
 
     while (!stopWorkers.load(std::memory_order_relaxed))
     {
@@ -38,7 +38,7 @@ auto worker(const program_opts& opts, const program_params& params,
         if (current == 0)
             break;
 
-        const auto lines = executor.execute(params.program, generator.generate());
+        const auto lines = executor.execute(params.program, generator.generate(random));
         if (lines >= std::numeric_limits<unsigned int>::max())
         {
             throw std::runtime_error(
