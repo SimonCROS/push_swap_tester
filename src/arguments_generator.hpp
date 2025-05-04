@@ -6,6 +6,7 @@
 #define RANDOM_LIST_ENGINE_HPP
 
 #include <unordered_set>
+#include <memory_resource>
 
 #include "thread_safe_random.hpp"
 
@@ -47,7 +48,8 @@ class ArgumentsGenerator
 private:
     const size_t m_numbersCount;
 
-    std::unordered_set<int> m_numbers;
+    std::pmr::unsynchronized_pool_resource m_pool;
+    std::pmr::unordered_set<int> m_numbers;
     char* m_buffer;
 
 public:
