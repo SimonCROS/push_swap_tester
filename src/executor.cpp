@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <sys/wait.h>
+#include <csignal>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -100,7 +101,12 @@ auto Executor::monitorChild(const program_opts& opts, const int stdoutFd, const 
         {stderrFd, POLLIN, {}}
     };
 
+    // ------------------------------------------------------------------------------------------------
+    // Be very careful when modifying this code, the behavior changes depending on the operating system
+    // ------------------------------------------------------------------------------------------------
+
     const auto startTime = std::chrono::steady_clock::now();
+    bool hup = false;
     while (true)
     {
         if (std::chrono::steady_clock::now() - startTime > opts.timeout)
@@ -113,8 +119,11 @@ auto Executor::monitorChild(const program_opts& opts, const int stdoutFd, const 
         const int events = poll(pfds, 2, 5);
         if (events == -1)
             break;
-        if (events == 0)
-            continue;
+
+        if (pfds[0].revents & (POLLHUP | POLLERR))
+        {
+            hup = true;
+        }
 
         if (pfds[0].revents & POLLIN)
         {
@@ -122,20 +131,26 @@ auto Executor::monitorChild(const program_opts& opts, const int stdoutFd, const 
             {
                 result.lines += std::count(buffer, buffer + bytesRead, '\n');
             }
-        }
-        if (pfds[1].revents & POLLIN)
-        {
-            if ((bytesRead = read(pfds[1].fd, buffer, sizeof(buffer))) > 0)
+            else if (hup)
             {
-                m_output.append(buffer, bytesRead);
+                break;
             }
         }
+        // if (pfds[1].revents & POLLIN)
+        // {
+        //     if ((bytesRead = read(pfds[1].fd, buffer, sizeof(buffer))) > 0)
+        //     {
+        //         m_output.append(buffer, bytesRead);
+        //     }
+        // }
 
-        if (!(pfds[0].revents & POLLIN) && pfds[0].revents & (POLLHUP | POLLERR))
+        if (hup && !(pfds[0].revents & POLLIN))
         {
             break;
         }
     }
+
+    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     result.status = waitChildProcessCompletion(pid);
     result.executionTime = std::chrono::steady_clock::now() - startTime;
