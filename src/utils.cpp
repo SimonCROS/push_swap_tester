@@ -29,25 +29,18 @@ auto assertExecutable(const std::string& path) -> void
 
 auto getStatus(const program_params& params, const results_t& results) -> status_t
 {
-    double mean = 0;
-    double stddev = 0;
-    uint64_t underObjective = 0;
-    uint32_t percentDone = 0;
+    status_t status{};
 
-    if (results.done > 0)
+    if (results.finished > 0)
     {
-        mean = static_cast<double>(results.total) / results.done;
-        for (const uint32_t result : results.results)
-            stddev += pow(mean - result, 2.0);
-        stddev = sqrt(stddev / results.done);
-        underObjective = (results.done - results.aboveObjective) * 100 / results.done;
-        percentDone = results.done * 100 / params.iterations;
+        status.underObjective = (results.finished - results.aboveObjective) * 100 / results.finished;
+        status.percentDone = results.finished * 100 / params.iterations;
+
+        if (results.finished > 1)
+        {
+            status.stddev = std::sqrt(results.m2 / (results.finished));
+        }
     }
 
-    return {
-        .mean = mean,
-        .stddev = stddev,
-        .underObjective = underObjective,
-        .percentDone = percentDone,
-    };
+    return status;
 }

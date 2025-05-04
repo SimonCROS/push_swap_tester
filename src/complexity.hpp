@@ -25,7 +25,7 @@ struct program_params
     std::string program;
     uint32_t numbers;
     uint32_t iterations;
-    std::optional<int> objective;
+    std::optional<uint32_t> objective;
     std::optional<std::string> checker;
 };
 
@@ -34,22 +34,29 @@ struct execution_result_t
     uint32_t lines{0};
     bool status{false};
     bool timedOut{false};
-    std::chrono::steady_clock::duration duration;
+    std::chrono::steady_clock::duration executionTime;
 };
 
 struct results_t
 {
-    std::vector<uint32_t> results;
+    std::chrono::duration<double, std::micro> meanExecutionTime;
+    double mean{0};
+    double m2{0};
+
+    uint32_t finished{0};
+
+    uint32_t success{0};
+    uint32_t error{0};
+    uint32_t timedOut{0};
+
     uint32_t worst{0};
     uint32_t best{std::numeric_limits<uint32_t>::max()};
-    uint64_t total{0};
-    uint32_t done{0};
+
     uint32_t aboveObjective{0};
 };
 
 struct status_t
 {
-    double mean;
     double stddev;
     uint64_t underObjective;
     uint32_t percentDone;

@@ -138,7 +138,7 @@ auto Executor::monitorChild(const int stdoutFd, const int stderrFd, const pid_t 
     }
 
     result.status = waitChildProcessCompletion(pid);
-    result.duration = std::chrono::steady_clock::now() - startTime;
+    result.executionTime = std::chrono::steady_clock::now() - startTime;
 
     return result;
 }

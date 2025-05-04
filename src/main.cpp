@@ -38,27 +38,45 @@ auto worker(const program_opts& opts, const program_params& params,
         if (current == 0)
             break;
 
-        const auto lines = executor.execute(params.program, generator.generate(random)).lines;
-        if (lines >= std::numeric_limits<unsigned int>::max())
-        {
-            throw std::runtime_error(
-                std::string("push_swap printed more than ") + std::to_string(std::numeric_limits<unsigned int>::max()) +
-                "lines"
-            );
-        }
+        const auto result = executor.execute(params.program, generator.generate(random));
 
         {
             std::scoped_lock lock(results_access);
 
-            ++results.done;
-            results.total += lines;
-            results.results.push_back(lines);
-            if (lines < results.best)
-                results.best = lines;
-            if (lines > results.worst)
-                results.worst = lines;
-            if (params.objective.has_value() && params.objective.value() < lines)
-                ++results.aboveObjective;
+            ++results.finished;
+            if (result.timedOut)
+            {
+                ++results.timedOut;
+            }
+            else if (result.status != 0)
+            {
+                ++results.error;
+            }
+            else
+            {
+                ++results.success;
+
+                {
+                    const double delta1 = result.lines - results.mean;
+                    results.mean += delta1 / results.success;
+                    const double delta2 = result.lines - results.mean;
+                    results.m2 += delta1 * delta2;
+                }
+
+                {
+                    const auto delta =
+                        std::chrono::duration_cast<decltype(results.meanExecutionTime)>(result.executionTime)
+                        - results.meanExecutionTime;
+                    results.meanExecutionTime += delta / results.success;
+                }
+
+                if (result.lines < results.best)
+                    results.best = result.lines;
+                if (result.lines > results.worst)
+                    results.worst = result.lines;
+                if (params.objective.has_value() && params.objective.value() < result.lines)
+                    ++results.aboveObjective;
+            }
         }
     }
 }
@@ -74,7 +92,7 @@ auto monitor(const program_params& params) -> void
             std::scoped_lock lock(results_access);
             printStatus(params, results);
         }
-        std::cout << "\033[7A" << std::flush;
+        std::cout << "\033[8A" << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
@@ -115,7 +133,6 @@ auto main(int argc, char* argv[]) -> int
     assertExecutable(params.program);
 
     remaining.store(params.iterations, std::memory_order_release);
-    results.results.reserve(params.iterations);
 
     signal(SIGINT, [](int)
     {

@@ -79,9 +79,10 @@ auto printStatus(const program_params& params, const results_t& results) -> void
     const status_t&& status = getStatus(params, results);
 
     std::cout << "Worst = \033[31m" << results.worst << "\033[0m instructions\033[K\n";
-    std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << status.mean << "\033[0m instructions\033[K\n";
+    std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << results.mean << "\033[0m instructions\033[K\n";
     std::cout << "Best = \033[36m" << results.best << "\033[0m instructions\033[K\n";
     std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << status.stddev << "\033[0m instructions\033[K\n";
+    std::cout << "Exec. time = \033[93m" << std::fixed << std::setprecision(1) << results.meanExecutionTime.count() << "\033[0m µs\033[K\n";
 
     if (params.objective.has_value()) {
         std::cout << "Objective = \033[94m" << status.underObjective
@@ -110,9 +111,10 @@ auto printJson(const program_params& params, const results_t& results, const Thr
         << "  \"iterations\": " << params.iterations << ",\n"
         << "  \"objective\": " << params.objective.value_or(-1) << ",\n"
         << "  \"worst\": " << results.worst << ",\n"
-        << "  \"mean\": " << std::fixed << std::setprecision(6) << status.mean << ",\n"
+        << "  \"mean\": " << std::fixed << std::setprecision(6) << results.mean << ",\n"
         << "  \"best\": " << results.best << ",\n"
         << "  \"stddev\": " << std::fixed << std::setprecision(6) << status.stddev << ",\n"
         << "  \"aboveObjective\": " << results.aboveObjective << "\n"
+        << "  \"executionTime\": " << std::fixed << std::setprecision(6) << results.meanExecutionTime.count() << ",\n"
         << "}\n";
 }
