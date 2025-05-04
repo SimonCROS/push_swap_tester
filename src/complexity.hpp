@@ -15,6 +15,7 @@ struct program_opts
     bool json;
     bool noJson;
     uint8_t threads{6};
+    std::chrono::milliseconds timeout{500};
     std::optional<std::string> program;
     std::optional<std::string> output;
     std::optional<ThreadSafeRandom::seed_type> seed;

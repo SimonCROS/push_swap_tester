@@ -24,7 +24,7 @@ static auto setNonblocking(const int fd) -> int
     return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 }
 
-auto Executor::execute(const std::string& program, ArgumentsIterator args) -> execution_result_t
+auto Executor::execute(const std::string& program, const program_opts& opts, ArgumentsIterator args) -> execution_result_t
 {
     m_output.clear();
     m_execArgs.clear();
@@ -77,7 +77,7 @@ auto Executor::execute(const std::string& program, ArgumentsIterator args) -> ex
         close(stdoutPipe[1]);
         close(stderrPipe[1]);
 
-        const execution_result_t&& result = monitorChild(stdoutPipe[0], stderrPipe[0], pid);
+        const execution_result_t&& result = monitorChild(opts, stdoutPipe[0], stderrPipe[0], pid);
 
         close(stdoutPipe[0]);
         close(stderrPipe[0]);
@@ -86,7 +86,7 @@ auto Executor::execute(const std::string& program, ArgumentsIterator args) -> ex
     }
 }
 
-auto Executor::monitorChild(const int stdoutFd, const int stderrFd, const pid_t pid) -> execution_result_t
+auto Executor::monitorChild(const program_opts& opts, const int stdoutFd, const int stderrFd, const pid_t pid) -> execution_result_t
 {
     using namespace std::chrono_literals;
 
@@ -103,7 +103,7 @@ auto Executor::monitorChild(const int stdoutFd, const int stderrFd, const pid_t 
     const auto startTime = std::chrono::steady_clock::now();
     while (true)
     {
-        if (std::chrono::steady_clock::now() - startTime > 500ms) // TODO custom
+        if (std::chrono::steady_clock::now() - startTime > opts.timeout)
         {
             result.timedOut = true;
             kill(pid, SIGKILL);

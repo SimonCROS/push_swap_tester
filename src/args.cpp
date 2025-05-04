@@ -39,6 +39,7 @@ auto getOptions(int& argc, char**& argv) -> program_opts
         {"file", required_argument, nullptr, 'f'},
         {"seed", required_argument, nullptr, 's'},
         {"threads", required_argument, nullptr, 't'},
+        {"timeout", required_argument, nullptr, 'k'},
         {"json", no_argument, nullptr, VALUE_JSON},
         {"no-json", no_argument, nullptr, VALUE_NO_JSON},
         {nullptr, 0, nullptr, 0}
@@ -47,7 +48,7 @@ auto getOptions(int& argc, char**& argv) -> program_opts
     program_opts opts{};
 
     int ch;
-    while ((ch = getopt_long(argc, argv, "vhs:f:o:t:", long_options, nullptr)) != -1)
+    while ((ch = getopt_long(argc, argv, "vhs:f:o:t:k:", long_options, nullptr)) != -1)
     {
         switch (ch)
         {
@@ -65,6 +66,9 @@ auto getOptions(int& argc, char**& argv) -> program_opts
             break;
         case 't':
             opts.threads = parseNumber(optarg, 1);
+            break;
+        case 'k':
+            opts.timeout = std::chrono::milliseconds(parseNumber(optarg, 1));
             break;
         case 's':
             opts.seed = parseNumber(optarg, 0);

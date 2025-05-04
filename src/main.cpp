@@ -38,7 +38,7 @@ auto worker(const program_opts& opts, const program_params& params,
         if (current == 0)
             break;
 
-        const auto result = executor.execute(params.program, generator.generate(random));
+        const auto result = executor.execute(params.program, opts, generator.generate(random));
 
         {
             std::scoped_lock lock(results_access);
