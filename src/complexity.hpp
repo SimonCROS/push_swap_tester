@@ -11,7 +11,6 @@ struct program_opts
 {
     bool version;
     bool help;
-    bool usage;
     bool json;
     bool noJson;
     uint8_t threads{6};

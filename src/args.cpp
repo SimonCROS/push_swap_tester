@@ -80,7 +80,7 @@ auto getOptions(int& argc, char**& argv) -> program_opts
             opts.noJson = true;
             break;
         default:
-            opts.usage = true;
+            throw std::invalid_argument("");
         }
     }
     argc -= optind;

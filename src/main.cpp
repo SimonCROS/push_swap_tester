@@ -111,26 +111,32 @@ auto main(int argc, char* argv[]) -> int
     program_opts opts;
     program_params params;
 
-    opts = getOptions(argc, argv);
-    if (opts.help || opts.version)
+    try
     {
-        if (opts.usage)
-            std::cout << getUsage() << std::endl; // TODO return error
-        else if (opts.version)
-            std::cout << getVersion() << std::endl;
-        else if (opts.help)
-            std::cout << getHelp() << std::endl;
-        return EXIT_SUCCESS;
-    }
+        opts = getOptions(argc, argv);
+        if (opts.help || opts.version)
+        {
+            if (opts.version)
+                std::cout << getVersion() << std::endl;
+            else if (opts.help)
+                std::cout << getHelp() << std::endl;
+            return EXIT_SUCCESS;
+        }
 
-    params = getParameters(argc, argv); // TODO can throw if not an int
-    if (opts.program.has_value())
-        params.program = *opts.program;
-    else if (isExecutable("../push_swap"))
-        params.program = "../push_swap";
-    else if (isExecutable("./push_swap"))
-        params.program = "./push_swap";
-    assertExecutable(params.program);
+        params = getParameters(argc, argv); // TODO can throw if not an int
+        if (opts.program.has_value())
+            params.program = *opts.program;
+        else if (isExecutable("../push_swap"))
+            params.program = "../push_swap";
+        else if (isExecutable("./push_swap"))
+            params.program = "./push_swap";
+        assertExecutable(params.program);
+    }
+    catch (...)
+    {
+        std::cerr << getUsage() << std::endl;
+        return EXIT_FAILURE;
+    }
 
     remaining.store(params.iterations, std::memory_order_release);
 
@@ -164,7 +170,7 @@ auto main(int argc, char* argv[]) -> int
         printJson(params, results, seed);
     showCursor();
 
-    if (results.aboveObjective > 0)
+    if (results.aboveObjective > 0 || results.error > 0 || results.timedOut > 0)
         return EXIT_FAILURE;
     return EXIT_SUCCESS;
 }
