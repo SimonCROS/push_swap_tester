@@ -38,7 +38,7 @@ auto worker(const program_opts& opts, const program_params& params,
         if (current == 0)
             break;
 
-        const auto lines = executor.execute(params.program, generator.generate(random));
+        const auto lines = executor.execute(params.program, generator.generate(random)).lines;
         if (lines >= std::numeric_limits<unsigned int>::max())
         {
             throw std::runtime_error(

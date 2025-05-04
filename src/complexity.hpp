@@ -29,6 +29,14 @@ struct program_params
     std::optional<std::string> checker;
 };
 
+struct execution_result_t
+{
+    uint32_t lines{0};
+    bool status{false};
+    bool timedOut{false};
+    std::chrono::steady_clock::duration duration;
+};
+
 struct results_t
 {
     std::vector<uint32_t> results;

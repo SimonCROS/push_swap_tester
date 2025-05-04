@@ -5,11 +5,11 @@
 #ifndef EXECUTOR_HPP
 #define EXECUTOR_HPP
 
-#include <sstream>
 #include <string>
 #include <vector>
 
 #include "arguments_generator.hpp"
+#include "complexity.hpp"
 
 class Executor
 {
@@ -25,7 +25,11 @@ public:
         m_execArgs.reserve(args + 2); // + 1 for program, + 1 for null termination
     }
 
-    auto execute(const std::string& program, ArgumentsIterator args) -> size_t;
+    auto execute(const std::string& program, ArgumentsIterator args) -> execution_result_t;
+
+private:
+    auto monitorChild(int stdoutFd, int stderrFd, pid_t pid) -> execution_result_t;
+    static auto waitChildProcessCompletion(pid_t pid) -> int;
 };
 
 #endif //EXECUTOR_HPP

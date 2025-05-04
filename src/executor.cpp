@@ -15,6 +15,8 @@
 
 #include "executor.hpp"
 
+#include "complexity.hpp"
+
 static auto setNonblocking(const int fd) -> int
 {
     const int flags = fcntl(fd, F_GETFL, 0);
@@ -22,7 +24,7 @@ static auto setNonblocking(const int fd) -> int
     return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 }
 
-auto Executor::execute(const std::string& program, ArgumentsIterator args) -> size_t
+auto Executor::execute(const std::string& program, ArgumentsIterator args) -> execution_result_t
 {
     m_output.clear();
     m_execArgs.clear();
@@ -75,70 +77,89 @@ auto Executor::execute(const std::string& program, ArgumentsIterator args) -> si
         close(stdoutPipe[1]);
         close(stderrPipe[1]);
 
-        char buffer[4096];
-        ssize_t bytesRead;
-
-        pollfd pfds[] = {
-            {stdoutPipe[0], POLLIN, {}},
-            {stderrPipe[0], POLLIN, {}}
-        };
-
-        size_t lines = 0;
-        bool timedOut = false;
-        const auto startTime = std::chrono::steady_clock::now();
-        while (true)
-        {
-            const auto now = std::chrono::steady_clock::now();
-            if (std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count() > 100)
-            {
-                timedOut = true;
-                kill(pid, SIGKILL);
-                break;
-            }
-
-            const int events = poll(pfds, 2, 5);
-            if (events == -1)
-                break;
-            if (events == 0)
-                continue;
-
-            if (pfds[0].revents & POLLIN)
-            {
-                if ((bytesRead = read(pfds[0].fd, buffer, sizeof(buffer))) > 0)
-                {
-                    lines += std::count(buffer, buffer + bytesRead, '\n');
-                }
-            }
-            if (pfds[1].revents & POLLIN) {
-                if ((bytesRead = read(pfds[1].fd, buffer, sizeof(buffer))) > 0)
-                {
-                    m_output.append(buffer, bytesRead);
-                }
-            }
-
-            if (pfds[0].revents & (POLLHUP | POLLERR)) {
-                break;
-            }
-        }
+        const execution_result_t&& result = monitorChild(stdoutPipe[0], stderrPipe[0], pid);
 
         close(stdoutPipe[0]);
         close(stderrPipe[0]);
 
-        // Wait for the child process to finish
-        int status;
-        waitpid(pid, &status, 0);
+        return result;
+    }
+}
 
-        if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+auto Executor::monitorChild(const int stdoutFd, const int stderrFd, const pid_t pid) -> execution_result_t
+{
+    using namespace std::chrono_literals;
+
+    execution_result_t result{};
+
+    char buffer[500];
+    ssize_t bytesRead;
+
+    pollfd pfds[] = {
+        {stdoutFd, POLLIN, {}},
+        {stderrFd, POLLIN, {}}
+    };
+
+    const auto startTime = std::chrono::steady_clock::now();
+    while (true)
+    {
+        if (std::chrono::steady_clock::now() - startTime > 50ms)
         {
-            std::cout << m_output << std::endl;
-            args.reset();
-            while (const auto arg = args.next())
-                std::cout << arg << " ";
-            std::cout << std::endl;
-
-            throw std::runtime_error("Child process failed with exit code " + std::to_string(WEXITSTATUS(status)));
+            result.timedOut = true;
+            kill(pid, SIGKILL);
+            break;
         }
 
-        return lines;
+        const int events = poll(pfds, 2, 5);
+        if (events == -1)
+            break;
+        if (events == 0)
+            continue;
+
+        if (pfds[0].revents & POLLIN)
+        {
+            if ((bytesRead = read(pfds[0].fd, buffer, sizeof(buffer))) > 0)
+            {
+                result.lines += std::count(buffer, buffer + bytesRead, '\n');
+            }
+        }
+        if (pfds[1].revents & POLLIN)
+        {
+            if ((bytesRead = read(pfds[1].fd, buffer, sizeof(buffer))) > 0)
+            {
+                m_output.append(buffer, bytesRead);
+            }
+        }
+
+        if (!(pfds[0].revents & POLLIN) && pfds[0].revents & (POLLHUP | POLLERR))
+        {
+            break;
+        }
     }
+
+    result.status = waitChildProcessCompletion(pid);
+    result.duration = std::chrono::steady_clock::now() - startTime;
+
+    return result;
+}
+
+auto Executor::waitChildProcessCompletion(const pid_t pid) -> int
+{
+    // Wait for the child process to finish
+    int status;
+
+    do
+    {
+        if (waitpid(pid, &status, 0) == -1)
+            return -1;
+    }
+    while (!WIFEXITED(status));
+
+    return WEXITSTATUS(status);
+
+    // std::cout << m_output << std::endl;
+    // args.reset();
+    // while (const auto arg = args.next())
+    //     std::cout << arg << " ";
+    // std::cout << std::endl;
 }
