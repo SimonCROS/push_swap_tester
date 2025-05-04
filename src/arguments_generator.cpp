@@ -34,9 +34,12 @@ auto ArgumentsGenerator::generate(ThreadSafeRandom& random) -> ArgumentsIterator
     std::mt19937 generator(random());
     std::uniform_int_distribution<int> dice(min, max); // Uniform distribution in range [min, max]
 
+    size_t maxIter = m_numbersCount * 2;
     m_numbers.clear();
-    while (m_numbers.size() < m_numbersCount)
+    while (m_numbers.size() < m_numbersCount && maxIter > 0)
     {
+        --maxIter;
+
         const int number = dice(generator);
 
         // Try to insert the number. If insertion succeeds, add it to the buffer
