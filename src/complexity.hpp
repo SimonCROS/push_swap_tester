@@ -39,7 +39,7 @@ struct execution_result_t
 
 struct results_t
 {
-    std::chrono::duration<double, std::micro> meanExecutionTime;
+    std::chrono::microseconds meanExecutionTime;
     double mean{0};
     double m2{0};
 

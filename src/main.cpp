@@ -65,7 +65,7 @@ auto worker(const program_opts& opts, const program_params& params,
 
                 {
                     const auto delta =
-                        std::chrono::duration_cast<decltype(results.meanExecutionTime)>(result.executionTime)
+                        std::chrono::duration_cast<std::chrono::microseconds>(result.executionTime)
                         - results.meanExecutionTime;
                     results.meanExecutionTime += delta / results.success;
                 }
@@ -92,7 +92,7 @@ auto monitor(const program_params& params) -> void
             std::scoped_lock lock(results_access);
             printStatus(params, results);
         }
-        std::cout << "\033[8A" << std::flush;
+        std::cout << (params.objective.has_value() ? "\033[7A" : "\033[6A") << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }

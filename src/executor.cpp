@@ -103,7 +103,7 @@ auto Executor::monitorChild(const int stdoutFd, const int stderrFd, const pid_t 
     const auto startTime = std::chrono::steady_clock::now();
     while (true)
     {
-        if (std::chrono::steady_clock::now() - startTime > 50ms)
+        if (std::chrono::steady_clock::now() - startTime > 500ms) // TODO custom
         {
             result.timedOut = true;
             kill(pid, SIGKILL);

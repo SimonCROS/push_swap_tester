@@ -82,23 +82,19 @@ auto printStatus(const program_params& params, const results_t& results) -> void
     std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << results.mean << "\033[0m instructions\033[K\n";
     std::cout << "Best = \033[36m" << results.best << "\033[0m instructions\033[K\n";
     std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << status.stddev << "\033[0m instructions\033[K\n";
-    std::cout << "Exec. time = \033[93m" << std::fixed << std::setprecision(1) << results.meanExecutionTime.count() << "\033[0m µs\033[K\n";
+    std::cout << "Exec. time = \033[97;1m" << std::fixed << std::setprecision(1) << results.meanExecutionTime.count() << "\033[0mµs\033[K\n";
 
     if (params.objective.has_value()) {
         std::cout << "Objective = \033[94m" << status.underObjective
             << "\033[0m % under \033[94m" << params.objective.value()
             << "\033[0m (\033[91m" << results.aboveObjective << "\033[0m above)\033[K\n";
-    } else {
-        std::cout << "Objective = enter a number as the third argument\033[K\n";
     }
 
-    // if (params.checker.has_value())
-    //     std::cout << "Precision = \033[97m" << (ok * 100 / done) << "\033[0m % OK (\033[91m" << (done - ok) << "\033[0m KO)\033[K\n" << std::endl;
-    // else
-    //     std::cout << "Precision = enter a tester as the fourth argument\033[K\n";
+    std::cout << "\033[32m" << status.percentDone << "\033[0m % effective\033[K";
+    if (results.error > 0 || results.timedOut > 0)
+        std::cout << " (excluded from stats: \033[31;1m" << results.timedOut << "\033[0m timeouts, \033[31;1m" << results.error << "\033[0m did not exit with status 0)";
 
-    std::cout << "Failed = currently not available\033[K\n";
-    std::cout << "\033[32m" << status.percentDone << "\033[0m % effective\033[K\n";
+    std::cout << std::endl;
 }
 
 auto printJson(const program_params& params, const results_t& results, const ThreadSafeRandom::seed_type seed) -> void
@@ -106,15 +102,23 @@ auto printJson(const program_params& params, const results_t& results, const Thr
     const status_t&& status = getStatus(params, results);
 
     std::cout << "{\n"
-        << "  \"elements\": " << params.numbers << ",\n"
-        << "  \"seed\": " << seed << ",\n"
-        << "  \"iterations\": " << params.iterations << ",\n"
-        << "  \"objective\": " << params.objective.value_or(-1) << ",\n"
-        << "  \"worst\": " << results.worst << ",\n"
-        << "  \"mean\": " << std::fixed << std::setprecision(6) << results.mean << ",\n"
-        << "  \"best\": " << results.best << ",\n"
-        << "  \"stddev\": " << std::fixed << std::setprecision(6) << status.stddev << ",\n"
-        << "  \"aboveObjective\": " << results.aboveObjective << "\n"
-        << "  \"executionTime\": " << std::fixed << std::setprecision(6) << results.meanExecutionTime.count() << ",\n"
+        << "  \"config\": {\n"
+        << "    \"elements\": " << params.numbers << ",\n"
+        << "    \"iterations\": " << params.iterations << ",\n"
+        << "    \"goal\": " << params.objective.value_or(0) << ",\n"
+        << "    \"seed\": " << seed << "\n"
+        << "  },\n"
+        << "  \"stats\": {\n"
+        << "    \"worst\": " << results.worst << ",\n"
+        << "    \"mean\": " << std::fixed << std::setprecision(6) << results.mean << ",\n"
+        << "    \"best\": " << results.best << ",\n"
+        << "    \"standardDeviation\": " << std::fixed << std::setprecision(6) << status.stddev << ",\n"
+        << "    \"missedGoalCount\": " << results.aboveObjective << "\n"
+        << "  },\n"
+        << "  \"executionStats\": {\n"
+        << "    \"meanExecutionTime\": " << std::fixed << std::setprecision(6) << results.meanExecutionTime.count() << ",\n"
+        << "    \"timeoutCount\": " << results.timedOut << ",\n"
+        << "    \"badExitStatusCount\": " << results.error << "\n"
+        << "  }\n"
         << "}\n";
 }
