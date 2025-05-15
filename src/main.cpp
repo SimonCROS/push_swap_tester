@@ -92,7 +92,7 @@ auto monitor(const program_params& params) -> void
             std::scoped_lock lock(results_access);
             printStatus(params, results);
         }
-        std::cout << (params.objective.has_value() ? "\033[7A" : "\033[6A") << std::flush;
+        std::cout << (params.objective.has_value() ? "\033[5A" : "\033[4A") << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }

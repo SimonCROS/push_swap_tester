@@ -83,10 +83,13 @@ auto printStatus(const program_params& params, const results_t& results) -> void
 {
     const status_t&& status = getStatus(params, results);
 
-    std::cout << "Worst = \033[31m" << results.worst << "\033[0m instructions\033[K\n";
-    std::cout << "Mean = \033[33m" << std::fixed << std::setprecision(1) << results.mean <<
-        "\033[0m instructions\033[K\n";
-    std::cout << "Best = \033[36m" << results.best << "\033[0m instructions\033[K\n";
+    std::cout << "Best / Mean / Worst = \033[36m"
+        << results.best
+        << "\033[0m / \033[33m"
+        << std::fixed << std::setprecision(1) << results.mean
+        << "\033[0m / \033[31m"
+        << results.worst
+        << "\033[0m instructions\033[K\n";
     std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << status.stddev <<
         "\033[0m instructions\033[K\n";
     std::cout << "Exec. time = \033[97;1m" << std::fixed << std::setprecision(1) << results.meanExecutionTime.count() <<
@@ -99,7 +102,7 @@ auto printStatus(const program_params& params, const results_t& results) -> void
             << "\033[0m (\033[91m" << results.aboveObjective << "\033[0m above)\033[K\n";
     }
 
-    std::cout << "\033[32m" << status.percentDone << "\033[0m % effective\033[K";
+    std::cout << "\033[32m" << status.percentDone << "\033[0m % completed\033[K";
     if (results.error > 0 || results.timedOut > 0)
         std::cout << " (excluded from stats: \033[31;1m" << results.timedOut << "\033[0m timeouts, \033[31;1m" <<
             results.error << "\033[0m did not exit with status 0)";
