@@ -20,6 +20,7 @@
 
 std::atomic_uint remaining{0};
 std::atomic_bool stopWorkers{false};
+std::atomic_bool killed{false};
 
 std::mutex results_access;
 results_t results{};
@@ -39,6 +40,10 @@ auto worker(const program_opts& opts, const program_params& params,
             break;
 
         const auto result = executor.execute(params.program, opts, generator.generate(random));
+
+        // If execution gets killed by a signal, result.status may not be 0, so results should be ignored as they can be invalid
+        if (killed.load(std::memory_order_relaxed))
+            break;
 
         {
             std::scoped_lock lock(results_access);
@@ -142,6 +147,7 @@ auto main(int argc, char* argv[]) -> int
 
     signal(SIGINT, [](int)
     {
+        killed.store(true, std::memory_order_relaxed);
         stopWorkers.store(true, std::memory_order_relaxed);
     });
 
