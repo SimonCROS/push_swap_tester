@@ -135,10 +135,16 @@ auto main(int argc, char* argv[]) -> int
             params.program = "../push_swap";
         else if (isExecutable("./push_swap"))
             params.program = "./push_swap";
+        else
+            throw std::runtime_error("No valid push_swap executable found.");
         assertExecutable(params.program);
     }
-    catch (...)
+    catch (const std::exception& ex)
     {
+        if (ex.what() != nullptr)
+        {
+            std::cerr << ex.what() << '\n';
+        }
         std::cerr << getUsage() << std::endl;
         return EXIT_FAILURE;
     }

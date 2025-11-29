@@ -92,8 +92,8 @@ auto printStatus(const program_params& params, const results_t& results) -> void
         << "\033[0m instructions\033[K\n";
     std::cout << "Std. deviation = \033[93m" << std::fixed << std::setprecision(1) << status.stddev <<
         "\033[0m instructions\033[K\n";
-    std::cout << "Exec. time = \033[97;1m" << std::fixed << std::setprecision(1) << results.meanExecutionTime.count() <<
-        "\033[0mµs\033[K\n";
+    std::cout << "Avg. exec. time = \033[97;1m" << std::fixed << std::setprecision(1) <<
+        results.meanExecutionTime.count() << "\033[0mµs\033[K\n";
 
     if (params.objective.has_value())
     {
