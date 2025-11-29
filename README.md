@@ -1,7 +1,7 @@
 > [!NOTE]
 > [January 13, 2025]
 > 
-> A new beta version is available on https://github.com/SimonCROS/push_swap_tester/tree/v2, with performances up to **4x faster** 🚀 !
+> A new beta version is available on https://github.com/SimonCROS/push_swap_tester/tree/v2, with performances up to **10x faster** 🚀 !
 
 # complexity
 
