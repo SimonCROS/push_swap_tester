@@ -25,7 +25,7 @@ auto showCursor() -> void
 
 auto getVersion() -> std::string_view
 {
-    return "Complexity 2.1.0 (2025-05-04)";
+    return "Complexity 2.2.0 (2025-11-29)";
 }
 
 auto getUsage() -> std::string_view
