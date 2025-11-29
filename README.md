@@ -32,7 +32,7 @@ Following options are available :
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specifies an output file for logs (errors, timeouts, excessive instructions)
 
 **--output-buffer**=<ins>buffer-size</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used along with `--output`; sets the maximum size of the output file (default: 10 MiB)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used along with **--output**, sets the maximum size of the output file (default: 10 MiB)
 
 **-f** <ins>push_swap</ins>, **--file**=<ins>push_swap</ins>\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use the specified <ins>push_swap</ins> executable
