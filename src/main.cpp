@@ -119,7 +119,7 @@ auto main(int argc, char* argv[]) -> int
     hideCursor();
     if (prettyPrint() && !opts.json)
     {
-        printStart(opts, params, seed);
+        printStart(params, seed);
         monitor(params);
     }
     waitAllThreads(threads);

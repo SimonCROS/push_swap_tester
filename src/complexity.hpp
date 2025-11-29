@@ -75,7 +75,7 @@ auto showCursor() -> void;
 auto getVersion() -> std::string_view;
 auto getUsage() -> std::string_view;
 auto getHelp() -> std::string;
-auto printStart(const program_opts& opts, const program_params& params, ThreadSafeRandom::seed_type seed) -> void;
+auto printStart(const program_params& params, ThreadSafeRandom::seed_type seed) -> void;
 auto printStatus(const program_params& params, const results_t& results) -> void;
 auto printJson(const program_params& params, const results_t& results, ThreadSafeRandom::seed_type seed) -> void;
 

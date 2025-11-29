@@ -31,7 +31,7 @@ auto getVersion() -> std::string_view
 auto getUsage() -> std::string_view
 {
     return
-        "usage: ./complexity [-vh] [-s seed] [-f push_swap] [-t threads] [-k timeout] numbers iterations [goal] [checker]";
+        "usage: ./complexity [-vh] [-s seed] [-o output] [-f push_swap] [-t threads] [-k timeout] numbers iterations [goal] [checker]";
 }
 
 auto getHelp() -> std::string
@@ -47,7 +47,7 @@ auto getHelp() -> std::string
         "     Following options are available :\n"
         "     \n"
         "     \033[1m-v\033[0m, \033[1m--version\033[0m\n"
-        "             Show version of tester\n"
+        "             Show version\n"
         "     \n"
         "     \033[1m-h\033[0m, \033[1m--help\033[0m\n"
         "             Show this message\n"
@@ -59,19 +59,22 @@ auto getHelp() -> std::string
         "             Generates the numbers based on the seed\n"
         "     \n"
         "     \033[1m-o\033[0m \033[4moutput\033[0m, \033[1m--output\033[0m=\033[4moutput\033[0m\n"
-        "             Specifies an output file for logs\n"
+        "             Specifies an output file for logs (for errors, timeouts and too many instructions)\n"
+        "     \n"
+        "     \033[1m--output-buffer\033[0m=\033[4mbuffer-size\033[0m\n"
+        "             Used along \033[1m--output\033[0m, changes the maximum size of the output file (default: 10MiB)\n"
         "     \n"
         "     \033[1m-f\033[0m \033[4mpush_swap\033[0m, \033[1m--file\033[0m=\033[4mpush_swap\033[0m\n"
-        "             Use \033[4mpush_swap\033[0m for push_swap executable\n"
+        "             Use the specified \033[4mpush_swap\033[0m executable\n"
         "     \n"
         "     \033[1m-t\033[0m \033[4mthreads\033[0m, \033[1m--threads\033[0m=\033[4mthreads\033[0m\n"
-        "             Specifies the amount of threads to use (default: 6)\n"
+        "             Specifies the number of threads to use (default: 6)\n"
         "     \n"
         "     \033[1m-k\033[0m \033[4mtimeout\033[0m, \033[1m--timeout\033[0m=\033[4mtimeout\033[0m\n"
         "             Timeout for one push_swap execution in milliseconds (default: 500)\n";
 }
 
-auto printStart(const program_opts& opts, const program_params& params, const ThreadSafeRandom::seed_type seed) -> void
+auto printStart(const program_params& params, const ThreadSafeRandom::seed_type seed) -> void
 {
     std::cout << getVersion() << '\n';
     std::cout << "\033[97mStarting the test : \033[95m" << params.numbers << "\033[97m elements, \033[95m" << params.

@@ -9,15 +9,15 @@ Compile with the following command
 ## Usage
 
 > [!WARNING]  
-> This version is a beta version. Checker and `-o` are currently not available.\
+> This version is a beta version. Checker is not available.\
 > If you find a bug, please report it to this pull request: https://github.com/SimonCROS/push_swap_tester/pull/6.
 
-**./complexity** \[**-vh**\] \[**-s** <ins>seed</ins>\] \[**-f** <ins>push_swap</ins>\] \[**-t** <ins>threads</ins>\] <ins>numbers</ins> <ins>iterations</ins> \[<ins>goal</ins>\] \[<ins>checker</ins>\]
+**./complexity** \[**-vh**\] \[**-s** <ins>seed</ins>\] \[**-o** <ins>output</ins>\] \[**-f** <ins>push_swap</ins>\] \[**-t** <ins>threads</ins>\] <ins>numbers</ins> <ins>iterations</ins> \[<ins>goal</ins>\] \[<ins>checker</ins>\]
 
 Following options are available :
 
 **-v**, **--version**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version of tester
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version
 
 **-h**, **--help**\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show help
@@ -29,13 +29,19 @@ Following options are available :
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generates the numbers based on the seed
 
 **-o** <ins>output</ins>, **--output**=<ins>output</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specifies an output file for logs
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specifies an output file for logs (errors, timeouts, excessive instructions)
+
+**--output-buffer**=<ins>buffer-size</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used along with `--output`; sets the maximum size of the output file (default: 10 MiB)
 
 **-f** <ins>push_swap</ins>, **--file**=<ins>push_swap</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use <ins>push_swap</ins> for push_swap executable
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use the specified <ins>push_swap</ins> executable
 
 **-t** <ins>threads</ins>, **--threads**=<ins>threads</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specifies the amount of threads to use (default: 6)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specifies the number of threads to use (default: 6)
+
+**-k** <ins>timeout</ins>, **--timeout**=<ins>timeout</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Timeout for a single push_swap execution in milliseconds (default: 500)
 
 ### Demo :
 
