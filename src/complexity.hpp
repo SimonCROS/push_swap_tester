@@ -9,15 +9,16 @@
 
 struct program_opts
 {
-    bool version;
-    bool help;
-    bool json;
-    bool noJson;
-    uint8_t threads{6};
     std::chrono::milliseconds timeout{500};
     std::optional<std::string> program;
     std::optional<std::string> output;
     std::optional<ThreadSafeRandom::seed_type> seed;
+    uint32_t outputBufferSizeKiB{10240}; // 10MiB
+    uint8_t threads{6};
+    bool version;
+    bool help;
+    bool json;
+    bool noJson;
 };
 
 struct program_params
@@ -31,14 +32,17 @@ struct program_params
 
 struct execution_result_t
 {
-    uint32_t lines{0};
-    bool status{false};
-    bool timedOut{false};
     std::chrono::steady_clock::duration executionTime;
+    uint32_t lines{0};
+    uint8_t status{0};
+    bool timedOut{false};
 };
 
 struct results_t
 {
+    char* outputBuffer{nullptr};
+    uint64_t outputBufferSize{0};
+
     std::chrono::microseconds meanExecutionTime;
     double mean{0};
     double m2{0};

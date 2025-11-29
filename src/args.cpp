@@ -6,14 +6,14 @@
 
 #include <getopt.h>
 
-static auto parseNumber(const char* str, const int min) -> uint32_t
+static auto parseNumber(const char* str, const uint32_t min) -> uint32_t
 {
     size_t end;
-    long number;
+    uint32_t number;
 
     try
     {
-        number = std::stol(str, &end);
+        number = std::stoi(str, &end);
         if (str[end] != '\0')
             throw std::invalid_argument("");
     }
@@ -29,6 +29,7 @@ static auto parseNumber(const char* str, const int min) -> uint32_t
 
 #define VALUE_JSON 1
 #define VALUE_NO_JSON 2
+#define VALUE_OUTPUT_BUFFER 3
 
 auto getOptions(int& argc, char**& argv) -> program_opts
 {
@@ -36,6 +37,7 @@ auto getOptions(int& argc, char**& argv) -> program_opts
         {"version", no_argument, nullptr, 'v'},
         {"help", no_argument, nullptr, 'h'},
         {"output", required_argument, nullptr, 'o'},
+        {"output-buffer", required_argument, nullptr, VALUE_OUTPUT_BUFFER},
         {"file", required_argument, nullptr, 'f'},
         {"seed", required_argument, nullptr, 's'},
         {"threads", required_argument, nullptr, 't'},
@@ -63,6 +65,13 @@ auto getOptions(int& argc, char**& argv) -> program_opts
             break;
         case 'o':
             opts.output = optarg;
+            break;
+        case VALUE_OUTPUT_BUFFER:
+            opts.outputBufferSizeKiB = parseNumber(optarg, 1);
+            if (opts.outputBufferSizeKiB > 1048576)
+            {
+                throw std::invalid_argument("Output buffer size is limited to 1048576 (1GiB)");
+            }
             break;
         case 't':
             opts.threads = parseNumber(optarg, 1);

@@ -14,7 +14,7 @@ ArgumentsGenerator::ArgumentsGenerator(const size_t numbersCount) : m_numbersCou
     if (numbersCount > 1000000)
         throw std::invalid_argument("The maximum number count is 1'000'000");
 
-    m_buffer = new char[m_numbersCount * lengthPerNumber];
+    m_buffer = new char[bufferSize()];
     m_numbers.reserve(m_numbersCount);
 }
 
@@ -28,7 +28,7 @@ auto ArgumentsGenerator::generate(ThreadSafeRandom& random) -> ArgumentsIterator
     constexpr int min = std::numeric_limits<int>::min();
     constexpr int max = std::numeric_limits<int>::max();
 
-    std::fill_n(m_buffer, m_numbersCount * lengthPerNumber, 0);
+    std::fill_n(m_buffer, bufferSize(), 0);
 
     std::mt19937 generator(random());
     std::uniform_int_distribution<int> dice(min, max); // Uniform distribution in range [min, max]
@@ -49,5 +49,18 @@ auto ArgumentsGenerator::generate(ThreadSafeRandom& random) -> ArgumentsIterator
         }
     }
 
-    return {m_buffer, m_buffer + (m_numbersCount * lengthPerNumber), lengthPerNumber};
+    return {m_buffer, m_buffer + (bufferSize()), lengthPerNumber};
+}
+
+auto ArgumentsGenerator::convert_last_buffer_to_printable() -> const char *
+{
+    const size_t length = bufferSize();
+    for (size_t i = 0; i < length; ++i)
+    {
+        if (m_buffer[i] == '\0')
+        {
+            m_buffer[i] = ' ';
+        }
+    }
+    return m_buffer;
 }

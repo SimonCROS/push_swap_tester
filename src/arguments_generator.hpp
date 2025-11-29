@@ -29,6 +29,8 @@ public:
     ~ArgumentsGenerator();
 
     auto generate(ThreadSafeRandom& random) -> ArgumentsIterator;
+    auto convert_last_buffer_to_printable() -> const char *;
+    auto bufferSize() const -> size_t { return m_numbersCount * lengthPerNumber; };
 };
 
 #endif //RANDOM_LIST_ENGINE_HPP

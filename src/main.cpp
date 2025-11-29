@@ -18,6 +18,8 @@
 std::atomic_uint remaining{0};
 std::atomic_bool stopWorkers{false};
 std::atomic_bool killed{false};
+std::atomic_uint64_t outputBufferPos{0};
+std::atomic_uint64_t outputBufferWritten{0};
 
 std::mutex results_access;
 results_t results{};
@@ -74,12 +76,12 @@ auto main(int argc, char* argv[]) -> int
         else if (isExecutable("./push_swap"))
             params.program = "./push_swap";
         else
-            throw std::runtime_error("No valid push_swap executable found.");
+            throw std::runtime_error("No valid push_swap executable found");
         assertExecutable(params.program);
     }
     catch (const std::exception& ex)
     {
-        if (ex.what() != nullptr)
+        if (ex.what() != nullptr && *ex.what() != '\0')
         {
             std::cerr << ex.what() << '\n';
         }
@@ -96,10 +98,17 @@ auto main(int argc, char* argv[]) -> int
     });
 
     ThreadSafeRandom::seed_type seed;
-    if (opts.seed)
+    if (opts.seed.has_value())
         seed = *opts.seed;
     else
         seed = std::random_device{}();
+
+    if (opts.output.has_value())
+    {
+        const uint64_t outputBufferSize{static_cast<uint64_t>(opts.outputBufferSizeKiB) * 1024ULL};
+        results.outputBufferSize = outputBufferSize;
+        results.outputBuffer = new char[outputBufferSize];
+    }
 
     ThreadSafeRandom random(seed);
     std::vector<std::thread> threads;
@@ -119,6 +128,33 @@ auto main(int argc, char* argv[]) -> int
     else
         printJson(params, results, seed);
     showCursor();
+
+    if (results.outputBuffer != nullptr)
+    {
+        const uint64_t wantedBufferLength = outputBufferPos.load(std::memory_order_relaxed);
+        const uint64_t finalBufferLength = outputBufferWritten.load(std::memory_order_relaxed);
+        if (std::FILE* outputFile = std::fopen(opts.output->c_str(), "w"))
+        {
+            const size_t lengthWrittenToFile = std::fwrite(results.outputBuffer, 1, finalBufferLength, outputFile);
+            if (lengthWrittenToFile != finalBufferLength)
+            {
+                std::perror("Error writing to file");
+            }
+
+            std::fclose(outputFile);
+
+            if (wantedBufferLength != finalBufferLength)
+            {
+                std::cout << "Output buffer too small! " << (wantedBufferLength - finalBufferLength) <<
+                    " bytes were truncated" << std::endl;
+            }
+        }
+        else
+        {
+            std::perror("Failed opening the output file for writing");
+        }
+        delete[] results.outputBuffer;
+    }
 
     if (results.aboveObjective > 0 || results.error > 0 || results.timedOut > 0)
         return EXIT_FAILURE;
