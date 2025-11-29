@@ -41,6 +41,7 @@ const string getHelp() {
 }
 
 void printStart(const program_opts& opts, const program_params& params) {
+	cout << "\033[97mNew pre-release version available, try it on the `v2` branch!\033[0m\n";
 	cout << "\033[97mDémarrage du test : \033[95m" << params.numbers << "\033[97m éléments, \033[95m" << params.iterations << "\033[97m itérations\033[0m";
 	if (opts.seed.has_value())
 		cout << " (seed " << opts.seed.value() << ")";
