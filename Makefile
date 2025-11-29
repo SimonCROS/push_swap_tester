@@ -4,27 +4,22 @@ NAME				:= complexity
 
 # Commands
 
-override CPPC		:= clang++
-override CPPFLAGS	:= -std=c++17 -Wall -Wextra
+CXXFLAGS			:= -std=c++17 -Wall -Wextra -O3
 
 # Sources
 
-LANG				:= fr_FR
-
 override SRCS		:=							\
 				main.cpp						\
-				exec.cpp						\
-				args.cpp						\
-				print.cpp						\
+				worker.cpp						\
 				utils.cpp						\
-				lang/$(LANG).cpp				\
+				print.cpp						\
+				args.cpp						\
+				executor.cpp					\
+				arguments_generator.cpp			\
 
-override HEADERS	:=							\
-				complexity.hpp					\
+override OBJS		:= $(addprefix build/, $(SRCS:.cpp=.o))
 
-override HEADERS	:= $(addprefix includes/,$(HEADERS))
-
-override OBJS		:= $(addprefix obj/, $(SRCS:.cpp=.o))
+override DEPS		:= $(OBJS:.o=.d)
 
 override OBJDIRS	:= $(sort $(dir $(OBJS)))
 
@@ -32,16 +27,8 @@ override OBJDIRS	:= $(sort $(dir $(OBJS)))
 
 all:		$(NAME)
 
-fr:
-			touch src/lang/fr_FR.cpp
-			$(MAKE) LANG="fr_FR"
-
-en:
-			touch src/lang/en_GB.cpp
-			$(MAKE) LANG="en_GB"
-
-obj/%.o:	src/%.cpp $(HEADERS)
-			$(CPPC) $(CPPFLAGS) -c $< -o $@ -Iincludes
+build/%.o:	src/%.cpp
+			$(CXX) $(CXXFLAGS) -c $< -o $@ -MMD -MP
 
 $(OBJS):	| $(OBJDIRS)
 
@@ -49,10 +36,10 @@ $(OBJDIRS):
 			mkdir -p $@
 
 $(NAME):	$(OBJS)
-			$(CPPC) $(CPPFLAGS) -o $@ $(OBJS)
+			$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
 
 clean:
-			rm -rf obj
+			rm -rf build
 
 fclean:		clean
 			rm -f $(NAME)
@@ -60,3 +47,5 @@ fclean:		clean
 re:			fclean all
 
 .PHONY:		all clean fclean re
+
+-include $(DEPS)

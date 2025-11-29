@@ -1,82 +1,114 @@
 #include "complexity.hpp"
 
 #include <iostream>
+
+#include <version>
+
 #include <getopt.h>
 
-using namespace std;
+static auto parseNumber(const char* str, const uint32_t min) -> uint32_t
+{
+    size_t end;
+    uint32_t number;
 
-static long parseNumber(string str, int min) {
-	size_t end;
-	long number;
+    try
+    {
+        number = std::stoi(str, &end);
+        if (str[end] != '\0')
+            throw std::invalid_argument("");
+    }
+    catch (...)
+    {
+        throw std::invalid_argument(std::string() + str + " is not a valid number");
+    }
 
-	try {
-		number = stol(str.c_str(), &end);
-		if (str.length() > end != 0)
-			throw invalid_argument("");
-	}
-	catch(const exception &e) {
-		throw invalid_argument(str + " is not a valid number");
-	}
-	if (number < min)
-		throw invalid_argument(str + " must be at least equal to " + to_string(min));
-	return number;
+    if (number < min)
+        throw std::invalid_argument(std::string() + str + " must be at least equal to " + std::to_string(min));
+    return number;
 }
 
-struct program_opts getOptions(int &argc, char **&argv) {
-	static struct option long_options[] = {
-		{"version", no_argument, NULL, 'v'},
-		{"help", no_argument, NULL, 'h'},
-		{"sorted", no_argument, NULL, 42},
-		{"output", required_argument, NULL, 'o'},
-		{"file", required_argument, NULL, 'f'},
-		{"seed", required_argument, NULL, 's'},
-		{NULL, 0, NULL, 0}
-	};
+#define VALUE_JSON 1
+#define VALUE_NO_JSON 2
+#define VALUE_OUTPUT_BUFFER 3
 
-	program_opts opts = {false, false, false, nullopt, nullopt, nullopt};
+auto getOptions(int& argc, char**& argv) -> program_opts
+{
+    static option long_options[] = {
+        {"version", no_argument, nullptr, 'v'},
+        {"help", no_argument, nullptr, 'h'},
+        {"output", required_argument, nullptr, 'o'},
+        {"output-buffer", required_argument, nullptr, VALUE_OUTPUT_BUFFER},
+        {"file", required_argument, nullptr, 'f'},
+        {"seed", required_argument, nullptr, 's'},
+        {"threads", required_argument, nullptr, 't'},
+        {"timeout", required_argument, nullptr, 'k'},
+        {"json", no_argument, nullptr, VALUE_JSON},
+        {"no-json", no_argument, nullptr, VALUE_NO_JSON},
+        {nullptr, 0, nullptr, 0}
+    };
 
-	int ch;
-	while ((ch = getopt_long(argc, argv, "vhs:f:o:", long_options, NULL)) != -1) {
-		switch (ch) {
-			case 'v':
-				opts.version = true;
-				break;
-			case 'h':
-				opts.help = true;
-				break;
-			case 'f':
-				opts.program = optarg;
-				break;
-			case 'o':
-				opts.output = optarg;
-				break;
-			case 42:
-				opts.sorted = true;
-				break;
-			case 's':
-				opts.seed = parseNumber(optarg, 0);
-				break;
-			default:
-				cerr << getUsage() << endl;
-				exit(EXIT_FAILURE);
-		}
-	}
-	argc -= optind;
-	argv += optind;
+    program_opts opts{};
 
-	return opts;
+    int ch;
+    while ((ch = getopt_long(argc, argv, "vhs:f:o:t:k:", long_options, nullptr)) != -1)
+    {
+        switch (ch)
+        {
+        case 'v':
+            opts.version = true;
+            break;
+        case 'h':
+            opts.help = true;
+            break;
+        case 'f':
+            opts.program = optarg;
+            break;
+        case 'o':
+            opts.output = optarg;
+            break;
+        case VALUE_OUTPUT_BUFFER:
+            opts.outputBufferSizeKiB = parseNumber(optarg, 1);
+            if (opts.outputBufferSizeKiB > 1048576)
+            {
+                throw std::invalid_argument("Output buffer size is limited to 1048576 (1GiB)");
+            }
+            break;
+        case 't':
+            opts.threads = parseNumber(optarg, 1);
+            break;
+        case 'k':
+            opts.timeout = std::chrono::milliseconds(parseNumber(optarg, 1));
+            break;
+        case 's':
+            opts.seed = parseNumber(optarg, 0);
+            break;
+        case VALUE_JSON:
+            opts.json = true;
+            break;
+        case VALUE_NO_JSON:
+            opts.noJson = true;
+            break;
+        default:
+            throw std::invalid_argument("");
+        }
+    }
+    argc -= optind;
+    argv += optind;
+
+    return opts;
 }
 
-struct program_params getParameters(int argc, char **argv) {
-	program_params params;
+auto getParameters(const int argc, char** argv) -> program_params
+{
+    program_params params;
 
-	if (argc < 2 || argc > 4)
-		throw invalid_argument("");
-	params.numbers = parseNumber(argv[0], 0);
-	params.iterations = parseNumber(argv[1], 1);
-	if (argc >= 3)
-		params.objective = parseNumber(argv[2], 0);
-	if (argc >= 4)
-		params.checker = assertExecutable(argv[3]);
-	return params;
+    if (argc < 2 || argc > 4)
+        throw std::invalid_argument("");
+    params.numbers = parseNumber(argv[0], 0);
+    params.iterations = parseNumber(argv[1], 1);
+    if (argc >= 3)
+        params.objective = parseNumber(argv[2], 0);
+    if (argc >= 4)
+        params.checker = argv[3];
+    return params;
 }

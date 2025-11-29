@@ -9,33 +9,44 @@
 
 Compile with the following command
 
-`make [fr|en]`
+`make`
 
 ## Usage
 
-**./complexity** \[**-vh**\] \[**-s** <ins>seed</ins>\] \[**-f** <ins>push_swap</ins>\] \[**--sorted**\] <ins>numbers</ins> <ins>iterations</ins> \[<ins>goal</ins>\] \[<ins>checker</ins>\]
+> [!WARNING]  
+> This version is a beta version. Checker is not available.\
+> If you find a bug, please report it to this pull request: https://github.com/SimonCROS/push_swap_tester/pull/6.
 
-L'exécutable push_swap est cherché par défaut dans le répertoire courant et parent.
+**./complexity** \[**-vh**\] \[**-s** <ins>seed</ins>\] \[**-o** <ins>output</ins>\] \[**-f** <ins>push_swap</ins>\] \[**-t** <ins>threads</ins>\] <ins>numbers</ins> <ins>iterations</ins> \[<ins>goal</ins>\] \[<ins>checker</ins>\]
 
-Les options suivantes sont disponibles :
+Following options are available :
 
 **-v**, **--version**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche la version du testeur
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version
 
 **-h**, **--help**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiche l'aide.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show help
+
+**--json**, **--no-json**\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toggle JSON output on or off. By default, JSON output is enabled for non-TTY environments
 
 **-s** <ins>seed</ins>, **--seed**=<ins>seed</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Génère les nombres en fonction de la graine.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generates the numbers based on the seed
 
 **-o** <ins>output</ins>, **--output**=<ins>output</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spécifie un fichier de sortie pour les logs.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specifies an output file for logs (errors, timeouts, excessive instructions)
+
+**--output-buffer**=<ins>buffer-size</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used along with **--output**, sets the maximum size of the output file (default: 10 MiB)
 
 **-f** <ins>push_swap</ins>, **--file**=<ins>push_swap</ins>\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilise <ins>push_swap</ins> en tant qu'exécutable push_swap.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use the specified <ins>push_swap</ins> executable
 
-**--sorted**\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Envoie uniquement des nombres triés au programme.
+**-t** <ins>threads</ins>, **--threads**=<ins>threads</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specifies the number of threads to use (default: 6)
+
+**-k** <ins>timeout</ins>, **--timeout**=<ins>timeout</ins>\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Timeout for a single push_swap execution in milliseconds (default: 500)
 
 ### Demo :
 
