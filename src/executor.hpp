@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "arguments_generator.hpp"
+#include "arguments_iterator.hpp"
 #include "complexity.hpp"
 
 class Executor
@@ -28,7 +28,7 @@ public:
     auto execute(const std::string& program, const program_opts& opts, ArgumentsIterator args) -> execution_result_t;
 
 private:
-    auto monitorChild(const program_opts& opts, int stdoutFd, int stderrFd, pid_t pid) -> execution_result_t;
+    static auto monitorChild(const program_opts& opts, int stdoutFd, int stderrFd, pid_t pid) -> execution_result_t;
     static auto waitChildProcessCompletion(pid_t pid) -> int;
 };
 

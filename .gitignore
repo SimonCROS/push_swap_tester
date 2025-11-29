@@ -3,7 +3,7 @@ push_swap
 checker
 checker_linux
 checker_Mac
-obj
+build
 
 # Prerequisites
 *.d

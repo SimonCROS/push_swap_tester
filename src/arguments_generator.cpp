@@ -5,7 +5,6 @@
 #include "arguments_generator.hpp"
 
 #include <charconv>
-#include <iostream>
 #include <algorithm>
 
 #include "thread_safe_random.hpp"

@@ -78,7 +78,7 @@ auto Executor::execute(const std::string& program, const program_opts& opts, Arg
         close(stdoutPipe[1]);
         close(stderrPipe[1]);
 
-        const execution_result_t&& result = monitorChild(opts, stdoutPipe[0], stderrPipe[0], pid);
+        const execution_result_t&& result = Executor::monitorChild(opts, stdoutPipe[0], stderrPipe[0], pid);
 
         close(stdoutPipe[0]);
         close(stderrPipe[0]);
