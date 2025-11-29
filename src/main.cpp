@@ -91,7 +91,9 @@ auto monitor(const program_params& params) -> void
     while (!stopWorkers.load(std::memory_order_relaxed))
     {
         if (remaining.load(std::memory_order_relaxed) == 0)
+        {
             stopWorkers.store(true, std::memory_order_relaxed);
+        }
 
         {
             std::scoped_lock lock(results_access);
